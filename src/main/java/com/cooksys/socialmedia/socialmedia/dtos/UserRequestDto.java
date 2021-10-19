@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @Data
 public class UserRequestDto {
 
-    private long id;
+    private long userId;
     private String username;
     private String password;
     private long timestamp;
@@ -19,5 +19,4 @@ public class UserRequestDto {
     private String email;
     private String phone;
     // NEEDS LIST
-
 }
