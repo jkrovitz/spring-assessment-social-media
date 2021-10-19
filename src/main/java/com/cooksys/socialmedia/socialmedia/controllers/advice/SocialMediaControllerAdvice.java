@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.cooksys.socialmedia.socialmedia.dtos.ErrorDto;
 import com.cooksys.socialmedia.socialmedia.exceptions.BadRequestException;
+import com.cooksys.socialmedia.socialmedia.exceptions.NotAuthorizedException;
 import com.cooksys.socialmedia.socialmedia.exceptions.NotFoundException;
 
 @ControllerAdvice(basePackages = { "com.cooksys.socialmedia.socialmedia.controllers" })
@@ -27,4 +28,12 @@ public class SocialMediaControllerAdvice {
 	public ErrorDto handleNotFoundException(HttpServletRequest request, NotFoundException notFoundException) {
 		return new ErrorDto(notFoundException.getMessage());
 	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(NotAuthorizedException.class)
+	public ErrorDto handleNotAuthorizedException(HttpServletRequest request,
+			NotAuthorizedException notAuthorizedException) {
+		return new ErrorDto(notAuthorizedException.getMessage());
+	}
+
 }
