@@ -13,8 +13,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Override
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+
     public List<UserResponseDto> getAllUsers() {
-        return UserMapper.entitiesToDtos(UserRepository.findAll());
+        return userMapper.entitiesToDtos(userRepository.findAll());
     }
 }
