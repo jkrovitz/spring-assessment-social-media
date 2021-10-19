@@ -31,6 +31,11 @@ public class User {
     private String email;
     private String phone;
 
+    @Embedded
+    private Profile profile;
+    @Embedded
+    private Credentials credentials;
+
 
     //DOUBLE CHECK RELATIONSHIPS
     @OneToMany(mappedBy = "user")
