@@ -1,14 +1,12 @@
 package com.cooksys.socialmedia.socialmedia.entities;
 
-public class User {
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-
+import java.security.Timestamp;
 import java.util.List;
+
 
 @Table(name="user_table")
 @Entity
