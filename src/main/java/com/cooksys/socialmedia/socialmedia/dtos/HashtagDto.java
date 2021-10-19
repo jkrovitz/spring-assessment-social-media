@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
-public class UserResponseDto {
+public class HashtagDto {
 
-    private String username;
+    private String label;
 
-    private ProfileDto profile;
+    private Timestamp firstUsed;
 
-    private Timestamp joined;
+    private Timestamp lastUsed;
 
 }

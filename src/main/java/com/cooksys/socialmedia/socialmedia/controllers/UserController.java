@@ -1,17 +1,23 @@
 package com.cooksys.socialmedia.socialmedia.controllers;
-import com.cooksys.socialmedia.socialmedia.dtos.UserRequestDto;
-import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
-import com.cooksys.socialmedia.socialmedia.services.UserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import com.cooksys.socialmedia.socialmedia.dtos.UserRequestDto;
+import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
+import com.cooksys.socialmedia.socialmedia.services.UserService;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;

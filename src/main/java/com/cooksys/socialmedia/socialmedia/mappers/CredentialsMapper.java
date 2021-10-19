@@ -1,8 +1,13 @@
 package com.cooksys.socialmedia.socialmedia.mappers;
 
+import com.cooksys.socialmedia.socialmedia.dtos.CredentialsDto;
+import com.cooksys.socialmedia.socialmedia.entities.Credentials;
+
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface CredentialsMapper {
+
+    Credentials dtoToEntity(CredentialsDto credentialsDto);
 
 }
