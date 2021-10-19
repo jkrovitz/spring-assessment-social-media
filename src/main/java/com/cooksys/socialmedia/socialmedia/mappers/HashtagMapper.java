@@ -20,4 +20,5 @@ public interface HashtagMapper {
 
 	Hashtag hashtagDtoToEntity(HashtagRequestDto hashtagRequestDto);
 
+
 }
