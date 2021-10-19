@@ -1,7 +1,5 @@
 package com.cooksys.socialmedia.socialmedia.mappers;
 
-import java.util.List;
-
 import com.cooksys.socialmedia.socialmedia.dtos.ProfileDto;
 import com.cooksys.socialmedia.socialmedia.entities.Profile;
 
