@@ -1,6 +1,5 @@
 package com.cooksys.socialmedia.socialmedia.entities;
 
-<<<<<<< Updated upstream
 public class User {
 =======
 import lombok.Data;
@@ -25,10 +24,10 @@ public class User {
 
     @Column(name = "joined")
     private Timestamp joined;
-
+    
     private String firstName;
     private String lastName;
     private String email;
     private String phone;
->>>>>>> Stashed changes
+
 }

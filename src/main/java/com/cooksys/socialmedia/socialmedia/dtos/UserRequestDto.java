@@ -1,8 +1,14 @@
 package com.cooksys.socialmedia.socialmedia.dtos;
 
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.sql.Timestamp;
+
+@NoArgsConstructor
+@Data
 public class UserRequestDto {
-<<<<<<< Updated upstream
-=======
 
     private long userId;
     private String username;
@@ -13,6 +19,4 @@ public class UserRequestDto {
     private String email;
     private String phone;
     // NEEDS LIST
-
->>>>>>> Stashed changes
 }
