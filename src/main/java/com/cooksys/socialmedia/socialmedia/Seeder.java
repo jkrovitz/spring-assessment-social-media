@@ -53,49 +53,24 @@ public class Seeder implements CommandLineRunner{
 		User user1 = new User();
 		user1.setCredentials(credential1);
 		user1.setDeleted(false);
-		user1.setJoined(new Timestamp(System.currentTimeMillis()));
 		user1.setProfile(profile1);
 		
 		User user2 = new User();
 		user2.setCredentials(credential2);
 		user2.setDeleted(false);
-		user2.setJoined(new Timestamp(System.currentTimeMillis()));
 		user2.setProfile(profile2);
 		
 		userRepository.saveAll(Arrays.asList(new User[] {user1, user2}));
 		
 		Hashtag hashtag1 = new Hashtag();
 		hashtag1.setLabel("#testhashtag1");
-		hashtag1.setFirstUsed(new Timestamp(System.currentTimeMillis()));
-		hashtag1.setLastUsed(new Timestamp(System.currentTimeMillis()));
+
 		
 		Hashtag hashtag2 = new Hashtag();
 		hashtag2.setLabel("#testhashtag2");
-		hashtag2.setFirstUsed(new Timestamp(System.currentTimeMillis()));
-		hashtag2.setLastUsed(new Timestamp(System.currentTimeMillis()));
 		
 		hashtagRepository.saveAll(Arrays.asList(new Hashtag[] {hashtag1, hashtag2}));
 		
-		Tweet tweet1 = new Tweet();
-		tweet1.setContent("tweet 1");
-		tweet1.setDeleted(false);
-		Timestamp timestamp1 = Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2018, 10, 7), LocalTime.of(8, 45, 0)));
-		String dateTime = "2020-12-12 01:24:23";
-
-        Timestamp timestamp2 = Timestamp.valueOf(dateTime);
-		
-		
-		tweet1.setPosted("2021-10-20T04:43:17.854+00:00");
-		
-		tweet1.setAuthor(user1);
-		
-		Tweet tweet2 = new Tweet();
-		tweet2.setContent("tweet 2");
-		tweet2.setDeleted(false);
-		tweet2.setPosted(new Timestamp(System.currentTimeMillis()));
-		tweet2.setAuthor(user2);
-		
-		tweetRepository.saveAll(Arrays.asList(new Tweet[] {tweet1, tweet2}));
 	}
 	
 

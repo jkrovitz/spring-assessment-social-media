@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.cooksys.socialmedia.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.socialmedia.exceptions.NotFoundException;
@@ -34,6 +37,12 @@ public class TweetServiceImpl implements TweetService {
 		return optionalTweet.get();
 	}
 	
+	public ResponseEntity<TweetResponseDto> postTweet(TweetRequestDto tweetRequestDto) {
+        Tweet tweetToSave = tweetMapper.dtoToEntity(tweetRequestDto);
+        return new ResponseEntity<>(tweetMapper.entityToDto(tweetRepository.saveAndFlush(tweetToSave)), HttpStatus.OK);
+    }
+	
+	
 	@Override
 	public List<TweetResponseDto> getAllTweets() {
 		List<Tweet> tweetList = new ArrayList<Tweet>();
@@ -42,17 +51,6 @@ public class TweetServiceImpl implements TweetService {
 			if (tweet.isDeleted() == false) {
 				tweetList.add(tweet);
 			}
-//		// Sort in dessending order
-//        Collections.sort(tweetList, new Comparator<Tweet>() {
-//            public int compare(Tweet tweet1, Tweet tweet2) {
-//                return Long.valueOf(tweet1.getPosted().getTime()).compareTo(tweet2.getPosted().getTime());
-//            }
-//        });
-//        
-//        System.out.println("After Descending sort");
-//        for(Tweet t: tweetList){
-//            tweetListSorted.add(t);
-//        }
 		}
 		return tweetMapper.entitiesToDtos(tweetList);
 	}
@@ -61,7 +59,7 @@ public class TweetServiceImpl implements TweetService {
 	public TweetResponseDto deleteTweet(Long tweetId) {
 		Tweet tweetToDelete = getTweet(tweetId);
 		tweetToDelete.setDeleted(true);
-		return tweetMapper.entityToDto(tweetToDelete);
+		return tweetMapper.entityToDto(tweetRepository.saveAndFlush(tweetToDelete));
 	}
 
 }
