@@ -1,6 +1,7 @@
 package com.cooksys.socialmedia.socialmedia.entities;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -16,6 +17,7 @@ import javax.persistence.Table;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Table(name = "user_table")
 @Entity
@@ -29,8 +31,9 @@ public class User {
     @GeneratedValue
     private Long id;
 
+    @CreationTimestamp
     @Column(name = "joined")
-    private Timestamp joined;
+    private java.sql.Timestamp joined = Timestamp.valueOf(LocalDateTime.now());
 
     private boolean deleted;
 
@@ -39,7 +42,6 @@ public class User {
     @Embedded
     private Credentials credentials;
 
-    // DOUBLE CHECK RELATIONSHIPS
     @OneToMany(mappedBy = "author")
     private List<Tweet> tweets;
 
