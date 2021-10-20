@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+
 import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.Data;
@@ -40,8 +41,19 @@ public class User {
     private boolean deleted;
 
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride( name = "firstName", column = @Column(name = "firstName")),
+            @AttributeOverride( name = "lastName", column = @Column(name = "lastName")),
+            @AttributeOverride( name = "phone", column = @Column(name = "phone")),
+            @AttributeOverride( name = "email", column = @Column(name = "email"))
+    })
     private Profile profile;
+
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride( name = "username", column = @Column(name = "username")),
+            @AttributeOverride( name = "password", column = @Column(name = "password")),
+    })
     private Credentials credentials;
 
     @OneToMany(mappedBy = "author")
@@ -59,4 +71,5 @@ public class User {
 
     @ManyToMany(mappedBy = "mentionedUsers")
     private List<Tweet> mentions;
+
 }

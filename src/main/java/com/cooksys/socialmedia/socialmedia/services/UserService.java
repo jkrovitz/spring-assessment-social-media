@@ -1,5 +1,7 @@
 package com.cooksys.socialmedia.socialmedia.services;
 
+import com.cooksys.socialmedia.socialmedia.dtos.CredentialsDto;
+import com.cooksys.socialmedia.socialmedia.dtos.ProfileDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
 import org.springframework.http.ResponseEntity;
@@ -10,5 +12,5 @@ public interface UserService {
 
     List<UserResponseDto> getAllUsers();
 
-    ResponseEntity<UserResponseDto> createUser(UserRequestDto userRequestDto);
+    UserResponseDto createUser(UserRequestDto userRequestDto);
 }
