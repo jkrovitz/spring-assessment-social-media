@@ -24,6 +24,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.entitiesToDtos(userRepository.findAll());
     }
 
+    //ADD CATCHES
     @Override
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
         return userMapper.entityToDto(userMapper.dtoToEntity(userRequestDto));
