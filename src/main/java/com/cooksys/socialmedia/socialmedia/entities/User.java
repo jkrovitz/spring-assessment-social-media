@@ -30,17 +30,17 @@ public class User {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride( name = "firstName", column = @Column(name = "user_first_name")),
-            @AttributeOverride( name = "lastName", column = @Column(name = "user_last_name")),
-            @AttributeOverride( name = "phone", column = @Column(name = "user_phone")),
-            @AttributeOverride( name = "email", column = @Column(name = "user_email"))
+            @AttributeOverride( name = "firstName", column = @Column(name = "firstName")),
+            @AttributeOverride( name = "lastName", column = @Column(name = "lastName")),
+            @AttributeOverride( name = "phone", column = @Column(name = "phone")),
+            @AttributeOverride( name = "email", column = @Column(name = "email"))
     })
     private Profile profile;
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride( name = "username", column = @Column(name = "user_username")),
-            @AttributeOverride( name = "password", column = @Column(name = "user_password")),
+            @AttributeOverride( name = "username", column = @Column(name = "username")),
+            @AttributeOverride( name = "password", column = @Column(name = "password")),
     })
     private Credentials credentials;
 
