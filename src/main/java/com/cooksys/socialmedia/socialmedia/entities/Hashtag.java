@@ -24,8 +24,8 @@ import lombok.NoArgsConstructor;
 public class Hashtag {
 
     @Id
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_JUST_FOR_TEST", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    @SequenceGenerator(name = "hashtag_ids")
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     @Column(name = "hashtag_id")
     private Long id;
 
