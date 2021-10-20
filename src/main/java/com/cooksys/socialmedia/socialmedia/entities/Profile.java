@@ -13,8 +13,8 @@ public class Profile {
 
     private String firstName; // OPTIONAL
     private String lastName; // OPTIONAL
+    private String phone; // OPTIONAL
     @Column(nullable = false)
     private String email; // MANDATORY
-    private String phone; // OPTIONAL
 
 }

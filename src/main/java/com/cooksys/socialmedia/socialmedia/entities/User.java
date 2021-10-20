@@ -4,16 +4,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,8 +29,19 @@ public class User {
     private boolean deleted;
 
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride( name = "firstName", column = @Column(name = "user_first_name")),
+            @AttributeOverride( name = "lastName", column = @Column(name = "user_last_name")),
+            @AttributeOverride( name = "phone", column = @Column(name = "user_phone")),
+            @AttributeOverride( name = "email", column = @Column(name = "user_email"))
+    })
     private Profile profile;
+
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride( name = "username", column = @Column(name = "user_username")),
+            @AttributeOverride( name = "password", column = @Column(name = "user_password")),
+    })
     private Credentials credentials;
 
     @OneToMany(mappedBy = "author")
@@ -57,4 +59,5 @@ public class User {
 
     @ManyToMany(mappedBy = "mentionedUsers")
     private List<Tweet> mentions;
+
 }
