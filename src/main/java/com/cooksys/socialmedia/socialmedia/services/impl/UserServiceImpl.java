@@ -49,14 +49,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto deleteUser(String username) {
-        return null;
+    public ResponseEntity<UserResponseDto> deleteUser(String username) {
+        Optional<User> chosenUser = userRepository.findByCredentialsUsername(username);
+        Long id = chosenUser.get().getId();
+        userRepository.deleteById(id);
+        if (chosenUser.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.GONE);
+        }
+        return new ResponseEntity<>(userMapper.entityToDto(chosenUser.get()), HttpStatus.NOT_MODIFIED);
     }
-//        Optional<User> chosenUser = userRepository.findByCredentialsUsername(username);
-//        if (chosenUser.isEmpty()) {
-//            chosenUser.get();
-//            userRepository.deleteUser();
-//        }
-//        return new ResponseEntity<>(userMapper.entityToDto(chosenUser.get()), HttpStatus.NOT_MODIFIED);
-//    }
 }

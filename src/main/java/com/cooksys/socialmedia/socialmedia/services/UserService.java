@@ -16,5 +16,5 @@ public interface UserService {
 
     UserResponseDto patchUser(UserRequestDto userRequestDto);
 
-    UserResponseDto deleteUser(String userRequestDto);
+    ResponseEntity<UserResponseDto> deleteUser(String username);
 }
