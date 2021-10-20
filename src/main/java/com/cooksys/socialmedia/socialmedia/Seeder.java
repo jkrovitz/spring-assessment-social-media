@@ -85,7 +85,7 @@ public class Seeder implements CommandLineRunner{
         Timestamp timestamp2 = Timestamp.valueOf(dateTime);
 		
 		
-		tweet1.setPosted("2021-10-20T04:43:17.854+00:00");
+//		tweet1.setPosted("2021-10-20T04:43:17.854+00:00");
 		
 		tweet1.setAuthor(user1);
 		
