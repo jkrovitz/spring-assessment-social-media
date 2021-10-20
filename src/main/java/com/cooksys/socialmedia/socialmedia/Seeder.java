@@ -71,6 +71,26 @@ public class Seeder implements CommandLineRunner{
 		
 		hashtagRepository.saveAll(Arrays.asList(new Hashtag[] {hashtag1, hashtag2}));
 		
+		Tweet tweet1 = new Tweet();
+		tweet1.setContent("tweet 1");
+		tweet1.setDeleted(false);
+		Timestamp timestamp1 = Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2018, 10, 7), LocalTime.of(8, 45, 0)));
+		String dateTime = "2020-12-12 01:24:23";
+
+        Timestamp timestamp2 = Timestamp.valueOf(dateTime);
+		
+		
+//		tweet1.setPosted("2021-10-20T04:43:17.854+00:00");
+		
+		tweet1.setAuthor(user1);
+		
+		Tweet tweet2 = new Tweet();
+		tweet2.setContent("tweet 2");
+		tweet2.setDeleted(false);
+		tweet2.setPosted(new Timestamp(System.currentTimeMillis()));
+		tweet2.setAuthor(user2);
+		
+		tweetRepository.saveAll(Arrays.asList(new Tweet[] {tweet1, tweet2}));
 	}
 	
 
