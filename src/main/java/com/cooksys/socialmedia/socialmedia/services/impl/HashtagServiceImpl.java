@@ -20,7 +20,8 @@ public class HashtagServiceImpl implements HashtagService {
 
     @Override
     public List<HashtagDto> getAllHashtags() {
-        return hashtagMapper.entitiesToDtos(hashtagRepository.findAll());
+//        return hashtagMapper.entitiesToDtos(hashtagRepository.findAll());
+    	return null;
     }
 
 }

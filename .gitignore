@@ -25,9 +25,9 @@ nbdist/
 
 ### macOS ###
 # General
-.DS_Store
-.AppleDouble
-.LSOverride
+**/.DS_Store
+**/.AppleDouble
+**/.LSOverride
 
 src/.DS_Store
 

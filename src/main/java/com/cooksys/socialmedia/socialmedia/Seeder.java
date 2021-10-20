@@ -53,26 +53,21 @@ public class Seeder implements CommandLineRunner{
 		User user1 = new User();
 		user1.setCredentials(credential1);
 		user1.setDeleted(false);
-		user1.setJoined(new Timestamp(System.currentTimeMillis()));
 		user1.setProfile(profile1);
 		
 		User user2 = new User();
 		user2.setCredentials(credential2);
 		user2.setDeleted(false);
-		user2.setJoined(new Timestamp(System.currentTimeMillis()));
 		user2.setProfile(profile2);
 		
 		userRepository.saveAll(Arrays.asList(new User[] {user1, user2}));
 		
 		Hashtag hashtag1 = new Hashtag();
 		hashtag1.setLabel("#testhashtag1");
-		hashtag1.setFirstUsed(new Timestamp(System.currentTimeMillis()));
-		hashtag1.setLastUsed(new Timestamp(System.currentTimeMillis()));
+
 		
 		Hashtag hashtag2 = new Hashtag();
 		hashtag2.setLabel("#testhashtag2");
-		hashtag2.setFirstUsed(new Timestamp(System.currentTimeMillis()));
-		hashtag2.setLastUsed(new Timestamp(System.currentTimeMillis()));
 		
 		hashtagRepository.saveAll(Arrays.asList(new Hashtag[] {hashtag1, hashtag2}));
 		
