@@ -18,7 +18,11 @@ public interface UserService {
 
     UserResponseDto userNameProfileUpdate(UserRequestDto userRequestDto);
 
-    void followUser(String username, CredentialsDto credentialsDto);
+    void followUser(String username, UserRequestDto userRequestDto);
 
-    void unFollowUser(String username, CredentialsDto credentialsDto);
+    void unFollowUser(String username, UserRequestDto userRequestDto);
+
+    List<UserResponseDto> getUserFollowers(String username);
+
+    List<UserResponseDto> getUserFollowing(String username);
 }

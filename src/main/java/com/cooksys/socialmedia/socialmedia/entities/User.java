@@ -73,6 +73,10 @@ public class User {
     @ManyToMany(mappedBy = "mentionedUsers")
     private List<Tweet> mentions;
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
     public void userFollow(User userToAdd){
         following.add(userToAdd);
     }

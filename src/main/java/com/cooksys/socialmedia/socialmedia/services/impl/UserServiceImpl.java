@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,21 +95,50 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void followUser(String username, CredentialsDto credentialsDto) {
-        User follower = getUserByUsername(credentialsDto.getUsername());
-        checkUser(follower, credentialsMapper.dtoToEntity(credentialsDto));
+    public void followUser(String username, UserRequestDto userRequestDto) {
+        User follower = getUserByUsername(userRequestDto.getCredentials().getUsername());
+        User check = userMapper.dtoToEntity(userRequestDto);
+        checkUser(follower, check.getCredentials());
         User followee = getUserByUsername(username);
-        followee.userFollowing(follower);
-        userRepository.saveAndFlush(followee);
+        if(!followee.getFollowers().contains(follower)){
+            follower.userFollow(followee);
+            followee.userFollowing(follower);
+            userRepository.saveAndFlush(followee);
+            userRepository.saveAndFlush(follower);
+        }
+        else {
+            throw new BadRequestException("Already following user");
+        }
+    }
+
+
+    @Override
+    public void unFollowUser(String username, UserRequestDto userRequestDto) {
+        User follower = getUserByUsername(userRequestDto.getCredentials().getUsername());
+        User check = userMapper.dtoToEntity(userRequestDto);
+        checkUser(follower, check.getCredentials());
+        User followee = getUserByUsername(username);
+        if(followee.getFollowers().contains(follower)) {
+            follower.userUnfollow(followee);
+            followee.userUnfollowing(follower);
+            userRepository.saveAndFlush(followee);
+        }
+        else {
+            throw new BadRequestException("You're already not following user");
+        }
     }
 
     @Override
-    public void unFollowUser(String username, CredentialsDto credentialsDto) {
-        User follower = getUserByUsername(credentialsDto.getUsername());
-        checkUser(follower, credentialsMapper.dtoToEntity(credentialsDto));
-        User followee = getUserByUsername(username);
-        followee.userUnfollowing(follower);
-        userRepository.saveAndFlush(followee);
+    public List<UserResponseDto> getUserFollowers(String username) {
+        User user = getUserByUsername(username);
+        List<User> followers = user.getFollowers();
+        return userMapper.entitiesToDtos(followers);
     }
 
+    @Override
+    public List<UserResponseDto> getUserFollowing(String username) {
+        User user = getUserByUsername(username);
+        List<User> following = user.getFollowing();
+        return userMapper.entitiesToDtos(following);
+    }
 }
