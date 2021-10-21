@@ -1,16 +1,18 @@
 package com.cooksys.socialmedia.socialmedia.services.impl;
 
+import com.cooksys.socialmedia.socialmedia.dtos.ProfileDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
 
+import com.cooksys.socialmedia.socialmedia.entities.Credentials;
 import com.cooksys.socialmedia.socialmedia.entities.User;
+import com.cooksys.socialmedia.socialmedia.exceptions.BadRequestException;
+import com.cooksys.socialmedia.socialmedia.exceptions.NotFoundException;
 import com.cooksys.socialmedia.socialmedia.mappers.UserMapper;
 import com.cooksys.socialmedia.socialmedia.repositories.UserRepository;
 import com.cooksys.socialmedia.socialmedia.services.UserService;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,39 +25,68 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public List<UserResponseDto> getAllUsers() {
+//CALLBACK/HELPER METHODS
+    private void checkUser(User user, Credentials credentials) {
+        if(!user.getCredentials().equals(credentials)) {
+            throw new BadRequestException("The credentials are not valid.");
+        }
+    }
 
+    private User getUserByUsername(String username) {
+        Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
+        if (user.isEmpty()) {
+            throw new NotFoundException("No user found");
+        }
+        return user.get();
+    }
+
+    //ADD FLAG FOR DELETED to be removed from list
+    public List<UserResponseDto> getAllUsers() {
         return userMapper.entitiesToDtos(userRepository.findAll());
     }
 
-    //ADD CATCHES
+    //ADD CATCHES & REFACTOR
     @Override
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
-        return userMapper.entityToDto(userMapper.dtoToEntity(userRequestDto));
-    }
-
-    @Override
-    public ResponseEntity<UserResponseDto> getUserUsername(String username) {
-        Optional<User> chosenUser = userRepository.findByCredentialsUsername(username);
-        if (chosenUser.isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        String username = userRequestDto.getCredentials().getUsername();
+        Optional<User> user = userRepository.findByCredentialsUsername(username);
+        if (user.isPresent() && user.get().isDeleted() &&
+                user.get().getCredentials().getPassword().equals(userRequestDto.getCredentials().getPassword())) {
+            user.get().setDeleted(false);
+            userRepository.saveAndFlush(user.get());
+            return userMapper.entityToDto(userMapper.dtoToEntity(userRequestDto));
         }
-        return new ResponseEntity<>(userMapper.entityToDto(chosenUser.get()), HttpStatus.OK);
-    }
-
-    @Override
-    public UserResponseDto patchUser(UserRequestDto userRequestDto) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<UserResponseDto> deleteUser(String username) {
-        Optional<User> chosenUser = userRepository.findByCredentialsUsername(username);
-        Long id = chosenUser.get().getId();
-        userRepository.deleteById(id);
-        if (chosenUser.isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.GONE);
+        else if (user.isPresent()) {
+            throw new BadRequestException("The username is not available.");
         }
-        return new ResponseEntity<>(userMapper.entityToDto(chosenUser.get()), HttpStatus.NOT_MODIFIED);
+        else {
+            return userMapper.entityToDto(userRepository.saveAndFlush(userMapper.dtoToEntity(userRequestDto)));
+        }
+    }
+
+    //ADD CATCHES & REFACTOR
+    @Override
+    public UserResponseDto getUserUsername(String username) {
+        return userMapper.entityToDto(getUserByUsername(username));
+    }
+
+    //ADD CATCHES & REFACTOR
+    @Override
+    public UserResponseDto deleteUser(UserRequestDto userRequestDto) {
+        User user = getUserByUsername(userRequestDto.getCredentials().getUsername());
+        User check = userMapper.dtoToEntity(userRequestDto);
+        checkUser(user, check.getCredentials());
+        user.setDeleted(true);
+        return userMapper.entityToDto(userRepository.saveAndFlush(user));
+    }
+
+    //ADD CATCHES & REFACTOR
+    @Override
+    public UserResponseDto userNameProfileUpdate(UserRequestDto userRequestDto) {
+        User user = getUserByUsername(userRequestDto.getCredentials().getUsername());
+        User check = userMapper.dtoToEntity(userRequestDto);
+        checkUser(user, check.getCredentials());
+        user.setProfile(check.getProfile());
+        return userMapper.entityToDto(userRepository.saveAndFlush(user));
     }
 }
