@@ -1,8 +1,5 @@
 package com.cooksys.socialmedia.socialmedia.repositories;
 
-import com.cooksys.socialmedia.socialmedia.dtos.ProfileDto;
-import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
-import com.cooksys.socialmedia.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.socialmedia.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,7 +12,9 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findById(Long userId);
+
     Optional<User> findByCredentialsUsername(String username);
+
     Optional<User> findByCredentialsUsernameAndDeletedFalse(String string);
 
     @Query("SELECT i FROM User i WHERE i.deleted=false")

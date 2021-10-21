@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 import java.sql.Timestamp;
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = { CredentialsMapper.class, ProfileMapper.class })
+@Mapper(componentModel = "spring", uses = {CredentialsMapper.class, ProfileMapper.class})
 public interface UserMapper {
 
     User dtoToEntity(UserRequestDto userRequestDto);

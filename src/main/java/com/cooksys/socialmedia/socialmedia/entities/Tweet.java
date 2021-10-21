@@ -2,6 +2,7 @@ package com.cooksys.socialmedia.socialmedia.entities;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -59,7 +60,7 @@ public class Tweet {
 
     @ManyToMany
     @JoinTable
-    private List<Hashtag> hashtags;
+    private List<Hashtag> hashtags = new ArrayList<>();
 
     @ManyToMany
     @JoinTable
@@ -67,6 +68,6 @@ public class Tweet {
 
     @ManyToMany
     @JoinTable
-    private List<User> mentionedUsers;
+    private List<User> mentionedUsers = new ArrayList<>();
 
 }
