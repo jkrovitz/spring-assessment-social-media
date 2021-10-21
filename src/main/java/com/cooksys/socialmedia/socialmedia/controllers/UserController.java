@@ -7,7 +7,6 @@ import com.cooksys.socialmedia.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
 import com.cooksys.socialmedia.socialmedia.services.UserService;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
@@ -30,13 +29,19 @@ public class UserController {
         return userService.createUser(userRequestDto);
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<UserResponseDto> getUserUsername(@PathVariable String username) {
+    @GetMapping("/@{username}")
+    public UserResponseDto getUserUsername(@PathVariable String username) {
         return userService.getUserUsername(username);
     }
 
-    @DeleteMapping("/{username}")
-    public ResponseEntity<UserResponseDto> deleteUser(@PathVariable String username) {
-        return userService.deleteUser(username);
+    @DeleteMapping("/@{username}")
+    public UserResponseDto deleteUser(@RequestBody UserRequestDto userRequestDto) {
+        return userService.deleteUser(userRequestDto);
+    }
+
+    @PatchMapping("/@{username}")
+    public UserResponseDto userNameProfileUpdate(@RequestBody UserRequestDto userRequestDto) {
+        return userService.userNameProfileUpdate(userRequestDto);
+
     }
 }
