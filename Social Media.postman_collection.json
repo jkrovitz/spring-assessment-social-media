@@ -259,9 +259,33 @@
 				},
 				{
 					"name": "Get Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function() {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test(\"json returns a list\", function () {",
+									"    pm.expect(pm.response.json()).to.be.an(\"array\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "file",
+							"file": {}
+						},
 						"url": {
 							"raw": "localhost:8080/users",
 							"host": [
@@ -313,6 +337,101 @@
 						"method": "GET",
 						"header": [],
 						"url": null
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Validate",
+			"item": [
+				{
+					"name": "GET validate/username/exists/@{username}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function() {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test ( \"Test that username testuser1 exists\", function () {",
+									"\tvar jsonData = pm.response.json ();",
+									"\tpm.expect(jsonData).to.eql(true);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/validate/username/exists@testuser1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"validate",
+								"username",
+								"exists@testuser1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET validate/username/available/@{username}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function() {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test ( \"Test that username testuser1 is available\", function () {",
+									"\tvar jsonData = pm.response.json ();",
+									"\tpm.expect(jsonData).to.eql(false);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/validate/username/available@testuser1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"validate",
+								"username",
+								"available@testuser1"
+							]
+						}
 					},
 					"response": []
 				}
