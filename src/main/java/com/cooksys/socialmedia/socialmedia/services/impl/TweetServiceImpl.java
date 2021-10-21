@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.cooksys.socialmedia.socialmedia.entities.Hashtag;
+import com.cooksys.socialmedia.socialmedia.mappers.UserMapper;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,6 @@ import com.cooksys.socialmedia.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
 
 import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
-import com.cooksys.socialmedia.socialmedia.entities.Hashtag;
 import com.cooksys.socialmedia.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.socialmedia.entities.User;
 import com.cooksys.socialmedia.socialmedia.exceptions.BadRequestException;
@@ -36,6 +36,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TweetServiceImpl implements TweetService {
+
+	private final UserMapper userMapper;
 
 	private final TweetRepository tweetRepository;
 
@@ -136,4 +138,11 @@ public class TweetServiceImpl implements TweetService {
 		List<Hashtag> hashes = chosenTweet.getHashtags();
         return hashtagMapper.entitiesToDtos(hashes);
     }
+
+	@Override
+	public List<UserResponseDto> getTweetMentionedUsers(Long tweetId) {
+		Tweet chosenTweet = getTweet(tweetId);
+		List<User> mentionedUsers = chosenTweet.getMentionedUsers();
+		return userMapper.entitiesToDtos(mentionedUsers);
+	}
 }
