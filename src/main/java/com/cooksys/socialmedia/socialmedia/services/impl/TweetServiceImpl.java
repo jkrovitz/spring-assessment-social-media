@@ -1,8 +1,12 @@
 package com.cooksys.socialmedia.socialmedia.services.impl;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -11,11 +15,15 @@ import org.springframework.stereotype.Service;
 
 import com.cooksys.socialmedia.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
+import com.cooksys.socialmedia.socialmedia.entities.Hashtag;
 import com.cooksys.socialmedia.socialmedia.entities.Tweet;
+import com.cooksys.socialmedia.socialmedia.entities.User;
 import com.cooksys.socialmedia.socialmedia.exceptions.BadRequestException;
 import com.cooksys.socialmedia.socialmedia.exceptions.NotFoundException;
 import com.cooksys.socialmedia.socialmedia.mappers.TweetMapper;
+import com.cooksys.socialmedia.socialmedia.repositories.HashtagRepository;
 import com.cooksys.socialmedia.socialmedia.repositories.TweetRepository;
+import com.cooksys.socialmedia.socialmedia.repositories.UserRepository;
 import com.cooksys.socialmedia.socialmedia.services.TweetService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +36,10 @@ public class TweetServiceImpl implements TweetService {
 
 	private final TweetMapper tweetMapper;
 
+	private final UserRepository userRepository;
+
+	private final HashtagRepository hashtagRepository;
+
 	private Tweet getTweet(Long tweetId) {
 		Optional<Tweet> optionalTweet = tweetRepository.findById(tweetId);
 		if (optionalTweet.isEmpty()) {
@@ -39,18 +51,64 @@ public class TweetServiceImpl implements TweetService {
 		}
 		return tweet;
 	}
-	
 
 	public ResponseEntity<TweetResponseDto> postTweet(TweetRequestDto tweetRequestDto) {
-        Tweet tweetToSave = tweetMapper.dtoToEntity(tweetRequestDto);
-        return new ResponseEntity<>(tweetMapper.entityToDto(tweetRepository.saveAndFlush(tweetToSave)), HttpStatus.CREATED);
-    }
-	
-	
+		String username = tweetRequestDto.getCredentials().getUsername();
+		Tweet tweetToSave = tweetMapper.dtoToEntity(tweetRequestDto);
+		Optional<User> optionalUser = userRepository.findByCredentialsUsername(username);
+		if (optionalUser.isPresent() && optionalUser.get().getCredentials().getPassword()
+				.equals(tweetRequestDto.getCredentials().getPassword())) {
+			User user = optionalUser.get();
+			tweetToSave.setAuthor(user);
+		} else {
+			throw new NotFoundException("Author was not found.");
+		}
+		String regexPattern = "(#\\w+)";
+
+		Pattern p = Pattern.compile(regexPattern);
+		Matcher m = p.matcher(tweetToSave.getContent());
+		while (m.find()) {
+			Hashtag hashtag = new Hashtag();
+			String hashtagString = m.group(1);
+			hashtagString = hashtagString.replace("#", "");
+			Optional<Hashtag> optionalHashtag = hashtagRepository.findHashtagByLabel(hashtagString);
+			if (optionalHashtag.isPresent()) {
+
+				hashtag = optionalHashtag.get();
+				hashtag.setLastUsed(Timestamp.valueOf(LocalDateTime.now()));
+
+			} else {
+				hashtag.setLabel(hashtagString);
+				hashtag.setFirstUsed(Timestamp.valueOf(LocalDateTime.now()));
+				hashtag.setLastUsed(Timestamp.valueOf(LocalDateTime.now()));
+
+				hashtagRepository.saveAndFlush(hashtag);
+			}
+			tweetToSave.getHashtags().add(hashtag);
+		}
+		String regexPatternMention = "(@\\w+)";
+		Pattern pattern = Pattern.compile(regexPatternMention);
+		Matcher match = pattern.matcher(tweetToSave.getContent());
+		while (match.find()) {
+
+			String userString = match.group(1);
+			userString = userString.replace("@", "");
+			System.out.println(userString);
+			Optional<User> optionalUser2 = userRepository.findByCredentialsUsername(userString);
+			if (optionalUser2.isPresent()) {
+				User user = optionalUser2.get();
+				tweetToSave.getMentionedUsers().add(user);
+
+			}
+		}
+		return new ResponseEntity<>(tweetMapper.entityToDto(tweetRepository.saveAndFlush(tweetToSave)),
+				HttpStatus.CREATED);
+	}
+
 	@Override
 	public List<TweetResponseDto> getAllTweets() {
 		List<Tweet> tweetList = new ArrayList<Tweet>();
-		for (Tweet tweet : tweetRepository.findAll((Sort.by(Sort.Direction.DESC, "posted")))){
+		for (Tweet tweet : tweetRepository.findAll((Sort.by(Sort.Direction.DESC, "posted")))) {
 			if (tweet.isDeleted() == false) {
 				tweetList.add(tweet);
 			}
