@@ -1,6 +1,5 @@
 package com.cooksys.socialmedia.socialmedia.services.impl;
 
-import com.cooksys.socialmedia.socialmedia.dtos.ProfileDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
 
@@ -8,6 +7,7 @@ import com.cooksys.socialmedia.socialmedia.entities.Credentials;
 import com.cooksys.socialmedia.socialmedia.entities.User;
 import com.cooksys.socialmedia.socialmedia.exceptions.BadRequestException;
 import com.cooksys.socialmedia.socialmedia.exceptions.NotFoundException;
+import com.cooksys.socialmedia.socialmedia.mappers.CredentialsMapper;
 import com.cooksys.socialmedia.socialmedia.mappers.UserMapper;
 import com.cooksys.socialmedia.socialmedia.repositories.UserRepository;
 import com.cooksys.socialmedia.socialmedia.services.UserService;
@@ -24,6 +24,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final CredentialsMapper credentialsMapper;
 
 //CALLBACK/HELPER METHODS
     private void checkUser(User user, Credentials credentials) {
@@ -88,5 +89,53 @@ public class UserServiceImpl implements UserService {
         checkUser(user, check.getCredentials());
         user.setProfile(check.getProfile());
         return userMapper.entityToDto(userRepository.saveAndFlush(user));
+    }
+
+    @Override
+    public void followUser(String username, UserRequestDto userRequestDto) {
+        User follower = getUserByUsername(userRequestDto.getCredentials().getUsername());
+        User check = userMapper.dtoToEntity(userRequestDto);
+        checkUser(follower, check.getCredentials());
+        User followee = getUserByUsername(username);
+        if(!followee.getFollowers().contains(follower)){
+            follower.userFollow(followee);
+            followee.userFollowing(follower);
+            userRepository.saveAndFlush(followee);
+            userRepository.saveAndFlush(follower);
+        }
+        else {
+            throw new BadRequestException("Already following user");
+        }
+    }
+
+
+    @Override
+    public void unFollowUser(String username, UserRequestDto userRequestDto) {
+        User follower = getUserByUsername(userRequestDto.getCredentials().getUsername());
+        User check = userMapper.dtoToEntity(userRequestDto);
+        checkUser(follower, check.getCredentials());
+        User followee = getUserByUsername(username);
+        if(followee.getFollowers().contains(follower)) {
+            follower.userUnfollow(followee);
+            followee.userUnfollowing(follower);
+            userRepository.saveAndFlush(followee);
+        }
+        else {
+            throw new BadRequestException("You're already not following user");
+        }
+    }
+
+    @Override
+    public List<UserResponseDto> getUserFollowers(String username) {
+        User user = getUserByUsername(username);
+        List<User> followers = user.getFollowers();
+        return userMapper.entitiesToDtos(followers);
+    }
+
+    @Override
+    public List<UserResponseDto> getUserFollowing(String username) {
+        User user = getUserByUsername(username);
+        List<User> following = user.getFollowing();
+        return userMapper.entitiesToDtos(following);
     }
 }

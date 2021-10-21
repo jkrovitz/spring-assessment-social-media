@@ -3,6 +3,7 @@ package com.cooksys.socialmedia.socialmedia.controllers;
 import java.util.List;
 
 
+import com.cooksys.socialmedia.socialmedia.dtos.CredentialsDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
 import com.cooksys.socialmedia.socialmedia.services.UserService;
@@ -42,5 +43,25 @@ public class UserController {
     @PatchMapping("/@{username}")
     public UserResponseDto userNameProfileUpdate(@RequestBody UserRequestDto userRequestDto) {
         return userService.userNameProfileUpdate(userRequestDto);
+    }
+
+    @PostMapping("/@{username}/follow")
+    public void followUser(@PathVariable String username, @RequestBody UserRequestDto userRequestDto) {
+        userService.followUser(username, userRequestDto);
+    }
+
+    @PostMapping("/@{username}/unfollow")
+    public void unFollowUser(@PathVariable String username, @RequestBody UserRequestDto userRequestDto) {
+        userService.unFollowUser(username, userRequestDto);
+    }
+
+    @GetMapping("/@{username}/followers")
+    public List<UserResponseDto> getUserFollowers(@PathVariable String username) {
+        return userService.getUserFollowers(username);
+    }
+
+    @GetMapping("/@{username}/following")
+    public List<UserResponseDto> getUserFollowing(@PathVariable String username) {
+        return userService.getUserFollowing(username);
     }
 }
