@@ -16,6 +16,6 @@ public interface TweetService {
 	
 	TweetResponseDto deleteTweet(Long tweetId);
 
-	ResponseEntity<HashtagDto> getTweetTags(Long tweetId);
+	List<HashtagDto> getTweetTags(Long tweetId);
 }
 

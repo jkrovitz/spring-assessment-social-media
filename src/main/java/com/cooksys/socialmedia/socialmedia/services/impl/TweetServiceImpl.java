@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.cooksys.socialmedia.socialmedia.entities.Hashtag;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,11 +73,9 @@ public class TweetServiceImpl implements TweetService {
 	}
 
     @Override
-    public ResponseEntity<HashtagDto> getTweetTags(Long tweetId) {
-        Optional<Tweet> chosenTweet = tweetRepository.findById(tweetId);
-        if (chosenTweet.isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(hashtagMapper.entitiesToDtos(chosenTweet.getHashtags()), HttpStatus.OK);
+    public List<HashtagDto> getTweetTags(Long tweetId) {
+        Tweet chosenTweet = getTweet(tweetId);
+		List<Hashtag> hashes = chosenTweet.getHashtags();
+        return hashtagMapper.entitiesToDtos(hashes);
     }
 }
