@@ -143,4 +143,11 @@ public class UserServiceImpl implements UserService {
         List<Tweet> tweets = user.getTweets();
         return tweetMapper.entitiesToDtos(tweets);
     }
+
+    @Override
+    public List<TweetResponseDto> getUserMentions(String username) {
+        User user = getUserByUsername(username);
+        List<Tweet> userMentions = user.getMentions();
+        return tweetMapper.entitiesToDtos(userMentions);
+    }
 }
