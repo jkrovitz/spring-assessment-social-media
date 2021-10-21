@@ -2,6 +2,7 @@ package com.cooksys.socialmedia.socialmedia.controllers;
 
 import java.util.List;
 
+import com.cooksys.socialmedia.socialmedia.dtos.HashtagDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,4 +40,10 @@ public class TweetController {
 	public TweetResponseDto deleteTweet(@PathVariable Long tweetId) {
 		return tweetService.deleteTweet(tweetId);
 	}
+	
+    @GetMapping("/{tweetId}/tags")
+    public List<HashtagDto> getTweetTags(@PathVariable Long tweetId) {
+        return tweetService.getTweetTags(tweetId);
+    }
+	
 }

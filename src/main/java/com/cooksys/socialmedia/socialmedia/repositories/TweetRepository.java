@@ -1,6 +1,7 @@
 package com.cooksys.socialmedia.socialmedia.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,4 +15,5 @@ public interface TweetRepository extends JpaRepository<Tweet, Long> {
 	@Query("SELECT t FROM Tweet t WHERE t.deleted=false")
 	List<Tweet> findAllNonDeletedTweets(List<Tweet> tweets);
 
+	Optional<Tweet> findById(Long tweetId);
 }

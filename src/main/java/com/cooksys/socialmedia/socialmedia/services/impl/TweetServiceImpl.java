@@ -8,18 +8,23 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.cooksys.socialmedia.socialmedia.entities.Hashtag;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.cooksys.socialmedia.socialmedia.dtos.HashtagDto;
 import com.cooksys.socialmedia.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
+
+import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
 import com.cooksys.socialmedia.socialmedia.entities.Hashtag;
 import com.cooksys.socialmedia.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.socialmedia.entities.User;
 import com.cooksys.socialmedia.socialmedia.exceptions.BadRequestException;
 import com.cooksys.socialmedia.socialmedia.exceptions.NotFoundException;
+import com.cooksys.socialmedia.socialmedia.mappers.HashtagMapper;
 import com.cooksys.socialmedia.socialmedia.mappers.TweetMapper;
 import com.cooksys.socialmedia.socialmedia.repositories.HashtagRepository;
 import com.cooksys.socialmedia.socialmedia.repositories.TweetRepository;
@@ -35,6 +40,8 @@ public class TweetServiceImpl implements TweetService {
 	private final TweetRepository tweetRepository;
 
 	private final TweetMapper tweetMapper;
+	
+	private final HashtagMapper hashtagMapper;
 
 	private final UserRepository userRepository;
 
@@ -123,4 +130,10 @@ public class TweetServiceImpl implements TweetService {
 		return tweetMapper.entityToDto(tweetRepository.saveAndFlush(tweetToDelete));
 	}
 
+    @Override
+    public List<HashtagDto> getTweetTags(Long tweetId) {
+        Tweet chosenTweet = getTweet(tweetId);
+		List<Hashtag> hashes = chosenTweet.getHashtags();
+        return hashtagMapper.entitiesToDtos(hashes);
+    }
 }

@@ -43,6 +43,7 @@ public class UserController {
     @PatchMapping("/@{username}")
     public UserResponseDto userNameProfileUpdate(@RequestBody UserRequestDto userRequestDto) {
         return userService.userNameProfileUpdate(userRequestDto);
+
     }
 
     @PostMapping("/@{username}/follow")
