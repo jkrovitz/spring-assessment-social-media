@@ -9,11 +9,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.cooksys.socialmedia.socialmedia.dtos.HashtagDto;
 import com.cooksys.socialmedia.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
+import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
 import com.cooksys.socialmedia.socialmedia.entities.Tweet;
+import com.cooksys.socialmedia.socialmedia.entities.User;
 import com.cooksys.socialmedia.socialmedia.exceptions.BadRequestException;
 import com.cooksys.socialmedia.socialmedia.exceptions.NotFoundException;
+import com.cooksys.socialmedia.socialmedia.mappers.HashtagMapper;
 import com.cooksys.socialmedia.socialmedia.mappers.TweetMapper;
 import com.cooksys.socialmedia.socialmedia.repositories.TweetRepository;
 import com.cooksys.socialmedia.socialmedia.services.TweetService;
@@ -27,6 +31,8 @@ public class TweetServiceImpl implements TweetService {
 	private final TweetRepository tweetRepository;
 
 	private final TweetMapper tweetMapper;
+	
+	private final HashtagMapper hashtagMapper;
 
 	private Tweet getTweet(Long tweetId) {
 		Optional<Tweet> optionalTweet = tweetRepository.findById(tweetId);
@@ -65,4 +71,12 @@ public class TweetServiceImpl implements TweetService {
 		return tweetMapper.entityToDto(tweetRepository.saveAndFlush(tweetToDelete));
 	}
 
+    @Override
+    public ResponseEntity<HashtagDto> getTweetTags(Long tweetId) {
+        Optional<Tweet> chosenTweet = tweetRepository.findById(tweetId);
+        if (chosenTweet.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(hashtagMapper.entitiesToDtos(chosenTweet.getHashtags()), HttpStatus.OK);
+    }
 }
