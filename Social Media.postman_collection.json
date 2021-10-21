@@ -1,0 +1,441 @@
+{
+	"info": {
+		"_postman_id": "01357634-b570-4549-9362-bb47513cba30",
+		"name": "Social Media",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Tweets",
+			"item": [
+				{
+					"name": "Create Tweet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Tweet created status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test ( \"Content to equal \\\"This is a new tweet\\\"\", function () {",
+									"\tvar jsonData = pm.response.json ();",
+									"\tpm.expect(jsonData.content ).to.eql(\"This is a new tweet\");",
+									"});",
+									"",
+									"pm.test(\"Object is contained\", () => {",
+									"  const expectedObject = {",
+									"    \"content\": \"This is a new tweet\",",
+									"    \"author\": {",
+									"            \"username\": \"testuser1\",",
+									"            \"profile\": {",
+									"                \"firstName\": \"Joe\",",
+									"                \"lastName\": \"Shmoe\",",
+									"                \"email\": \"test1@test.com\",",
+									"                \"phone\": \"1111111111\"",
+									"            },",
+									"            \"joined\": \"2021-10-20T19:57:16.830+00:00\"",
+									"        }",
+									"};",
+									"  pm.expect(pm.response.json()).to.deep.include(expectedObject);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"This is a new tweet\",\n    \"author\": {\n            \"username\": \"testuser1\",\n            \"profile\": {\n                \"firstName\": \"Joe\",\n                \"lastName\": \"Shmoe\",\n                \"email\": \"test1@test.com\",\n                \"phone\": \"1111111111\"\n            },\n            \"joined\": \"2021-10-20T19:57:16.830+00:00\"\n        }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/tweets/",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tweets",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Tweets",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function() {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test(\"json returns a list\", function () {",
+									"    pm.expect(pm.response.json()).to.be.an(\"array\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"This is the first tweet\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/tweets/",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tweets",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Tweet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Object is contained\", () => {",
+									"  const expectedObject = {",
+									"    \"content\": \"This is a new tweet\",",
+									"    \"author\": {",
+									"        \"id\": 1,",
+									"        \"author\": {",
+									"            \"username\": \"testuser1\",",
+									"            \"profile\": {",
+									"                \"firstName\": \"Joe\",",
+									"                \"lastName\": \"Shmoe\",",
+									"                \"email\": \"test1@test.com\",",
+									"                \"phone\": \"1111111111\"",
+									"            },",
+									"            \"joined\": \"2021-10-20T19:57:16.830+00:00\"",
+									"        },",
+									"        \"posted\": \"2021-10-20T19:57:16.862+00:00\",",
+									"        \"content\": \"tweet 1\",",
+									"        \"inReplyTo\": null,",
+									"        \"repostOf\": null",
+									"    }};",
+									"  pm.expect(pm.response.json()).to.deep.include(expectedObject);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/tweets/7",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tweets",
+								"7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User created status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test ( \"username to equal user3\" , function () {",
+									"\tvar jsonData = pm.response.json ();",
+									"\tpm.expect(jsonData.username ).to.eql(\"user3\");",
+									"});",
+									"",
+									"pm.test ( \"profile.firstName to equal test\" , function () {",
+									"\tvar jsonData = pm.response.json ();",
+									"\tpm.expect(jsonData.profile.firstName ).to.eql(\"test\");",
+									"});",
+									"",
+									"pm.test ( \"profile.lastName to equal user\" , function () {",
+									"\tvar jsonData = pm.response.json ();",
+									"\tpm.expect(jsonData.profile.lastName ).to.eql(\"user\");",
+									"});",
+									"",
+									"pm.test(\"To have any keys\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.any.keys(\"profile\")",
+									"})",
+									"",
+									"pm.test(\"Object is contained\", () => {",
+									"  const expectedObject = {\"username\": \"user3\"};",
+									"  pm.expect(pm.response.json()).to.deep.include(expectedObject);",
+									"});",
+									"",
+									"pm.test(\"Object is contained\", () => {",
+									"  const expectedObject = {",
+									"    \"username\": \"user3\",",
+									"    \"profile\": {",
+									"        \"firstName\": \"test\",",
+									"        \"lastName\": \"user\",",
+									"        \"email\": \"testuser1@test.com\",",
+									"        \"phone\": \"1111111111\"",
+									"    }",
+									"};",
+									"  pm.expect(pm.response.json()).to.deep.include(expectedObject);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"credentials\": {\n      \"username\": \"user3\",\n      \"password\": \"password3\"\n      },\n  \"profile\": {\n      \"firstName\": \"test\",\n      \"lastName\": \"user\",\n      \"email\": \"testuser3@test.com\",\n    \"phone\": \"1111111111\"\n  }\n  \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function() {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test(\"json returns a list\", function () {",
+									"    pm.expect(pm.response.json()).to.be.an(\"array\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "file",
+							"file": {}
+						},
+						"url": {
+							"raw": "localhost:8080/users",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By Username",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function() {",
+									"    pm.response.to.have.status(200)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/users/user3",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"user3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user by username",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Validate",
+			"item": [
+				{
+					"name": "GET validate/username/exists/@{username}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function() {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test ( \"Test that username testuser1 exists\", function () {",
+									"\tvar jsonData = pm.response.json ();",
+									"\tpm.expect(jsonData).to.eql(true);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/validate/username/exists@testuser1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"validate",
+								"username",
+								"exists@testuser1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET validate/username/available/@{username}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function() {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test ( \"Test that username testuser1 is available\", function () {",
+									"\tvar jsonData = pm.response.json ();",
+									"\tpm.expect(jsonData).to.eql(false);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/validate/username/available@testuser1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"validate",
+								"username",
+								"available@testuser1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
