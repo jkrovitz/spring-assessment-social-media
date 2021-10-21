@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
 //CALLBACK/HELPER METHODS
     private void checkUser(User user, Credentials credentials) {
-        if(user.getCredentials() != (credentials)) {
+        if(!user.getCredentials().equals(credentials)) {
             throw new BadRequestException("The credentials are not valid.");
         }
     }
