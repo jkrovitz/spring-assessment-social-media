@@ -73,4 +73,20 @@ public class User {
     @ManyToMany(mappedBy = "mentionedUsers")
     private List<Tweet> mentions;
 
+    public void userFollow(User userToAdd){
+        following.add(userToAdd);
+    }
+
+    public void userFollowing(User userToAdd) {
+        followers.add(userToAdd);
+    }
+
+    public void userUnfollow(User userToRemove){
+        following.remove(userToRemove);
+    }
+
+    public void userUnfollowing(User userToRemove){
+        followers.remove(userToRemove);
+    }
+
 }

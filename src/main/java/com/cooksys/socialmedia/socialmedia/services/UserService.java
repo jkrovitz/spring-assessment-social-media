@@ -1,5 +1,6 @@
 package com.cooksys.socialmedia.socialmedia.services;
 
+import com.cooksys.socialmedia.socialmedia.dtos.CredentialsDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
 
@@ -16,4 +17,8 @@ public interface UserService {
     UserResponseDto deleteUser(UserRequestDto userRequestDto);
 
     UserResponseDto userNameProfileUpdate(UserRequestDto userRequestDto);
+
+    void followUser(String username, CredentialsDto credentialsDto);
+
+    void unFollowUser(String username, CredentialsDto credentialsDto);
 }
