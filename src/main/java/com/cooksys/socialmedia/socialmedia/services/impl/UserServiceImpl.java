@@ -147,8 +147,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<TweetResponseDto> getUserMentions(String username) {
-        User user = getUserByUsername(username);
-        List<Tweet> userMentions = user.getMentions();
-        return tweetMapper.entitiesToDtos(userMentions);
-    }
+            return tweetRepository.findByDeletedFalseAndUsersMentionedOrderByPostedDesc(username);
+        }
 }
