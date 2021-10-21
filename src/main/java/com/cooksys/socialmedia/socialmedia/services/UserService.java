@@ -1,8 +1,8 @@
 package com.cooksys.socialmedia.socialmedia.services;
 
-import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
+import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
 
 import java.util.List;
 
