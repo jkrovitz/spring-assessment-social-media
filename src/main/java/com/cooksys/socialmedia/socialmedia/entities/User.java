@@ -32,7 +32,7 @@ public class User {
     @Id
     @Column(name = "user_id")
     @SequenceGenerator(name = "user_ids")
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @CreationTimestamp
@@ -43,17 +43,17 @@ public class User {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride( name = "firstName", column = @Column(name = "firstName")),
-            @AttributeOverride( name = "lastName", column = @Column(name = "lastName")),
-            @AttributeOverride( name = "phone", column = @Column(name = "phone")),
-            @AttributeOverride( name = "email", column = @Column(name = "email"))
+            @AttributeOverride(name = "firstName", column = @Column(name = "firstName")),
+            @AttributeOverride(name = "lastName", column = @Column(name = "lastName")),
+            @AttributeOverride(name = "phone", column = @Column(name = "phone")),
+            @AttributeOverride(name = "email", column = @Column(name = "email"))
     })
     private Profile profile;
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride( name = "username", column = @Column(name = "username")),
-            @AttributeOverride( name = "password", column = @Column(name = "password")),
+            @AttributeOverride(name = "username", column = @Column(name = "username")),
+            @AttributeOverride(name = "password", column = @Column(name = "password")),
     })
     private Credentials credentials;
 
@@ -77,7 +77,7 @@ public class User {
         return deleted;
     }
 
-    public void userFollow(User userToAdd){
+    public void userFollow(User userToAdd) {
 
         following.add(userToAdd);
     }
@@ -87,12 +87,12 @@ public class User {
         followers.add(userToAdd);
     }
 
-    public void userUnfollow(User userToRemove){
+    public void userUnfollow(User userToRemove) {
 
         following.remove(userToRemove);
     }
 
-    public void userUnfollowing(User userToRemove){
+    public void userUnfollowing(User userToRemove) {
 
         followers.remove(userToRemove);
     }
