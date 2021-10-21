@@ -1,13 +1,16 @@
 package com.cooksys.socialmedia.socialmedia.services.impl;
 
+import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
 
 import com.cooksys.socialmedia.socialmedia.entities.Credentials;
+import com.cooksys.socialmedia.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.socialmedia.entities.User;
 import com.cooksys.socialmedia.socialmedia.exceptions.BadRequestException;
 import com.cooksys.socialmedia.socialmedia.exceptions.NotFoundException;
 import com.cooksys.socialmedia.socialmedia.mappers.CredentialsMapper;
+import com.cooksys.socialmedia.socialmedia.mappers.TweetMapper;
 import com.cooksys.socialmedia.socialmedia.mappers.UserMapper;
 import com.cooksys.socialmedia.socialmedia.repositories.UserRepository;
 import com.cooksys.socialmedia.socialmedia.services.UserService;
@@ -24,7 +27,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final CredentialsMapper credentialsMapper;
+    private final TweetMapper tweetMapper;
 
 //CALLBACK/HELPER METHODS
     private void checkUser(User user, Credentials credentials) {
@@ -137,5 +140,12 @@ public class UserServiceImpl implements UserService {
         User user = getUserByUsername(username);
         List<User> following = user.getFollowing();
         return userMapper.entitiesToDtos(following);
+    }
+
+    @Override
+    public List<TweetResponseDto> getUserTweets(String username) {
+        User user = getUserByUsername(username);
+        List<Tweet> tweets = user.getTweets();
+        return tweetMapper.entitiesToDtos(tweets);
     }
 }

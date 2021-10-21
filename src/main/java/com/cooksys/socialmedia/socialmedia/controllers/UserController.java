@@ -3,7 +3,7 @@ package com.cooksys.socialmedia.socialmedia.controllers;
 import java.util.List;
 
 
-import com.cooksys.socialmedia.socialmedia.dtos.CredentialsDto;
+import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
 import com.cooksys.socialmedia.socialmedia.services.UserService;
@@ -63,5 +63,10 @@ public class UserController {
     @GetMapping("/@{username}/following")
     public List<UserResponseDto> getUserFollowing(@PathVariable String username) {
         return userService.getUserFollowing(username);
+    }
+
+    @GetMapping("/@{username}/tweets")
+    public List<TweetResponseDto> getUserTweets(@PathVariable String username) {
+        return userService.getUserTweets(username);
     }
 }
