@@ -11,6 +11,7 @@ import com.cooksys.socialmedia.socialmedia.exceptions.BadRequestException;
 import com.cooksys.socialmedia.socialmedia.exceptions.NotFoundException;
 import com.cooksys.socialmedia.socialmedia.mappers.TweetMapper;
 import com.cooksys.socialmedia.socialmedia.mappers.UserMapper;
+import com.cooksys.socialmedia.socialmedia.repositories.TweetRepository;
 import com.cooksys.socialmedia.socialmedia.repositories.UserRepository;
 import com.cooksys.socialmedia.socialmedia.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final TweetRepository tweetRepository;
     private final UserMapper userMapper;
     private final TweetMapper tweetMapper;
 
@@ -137,11 +139,10 @@ public class UserServiceImpl implements UserService {
         return userMapper.entitiesToDtos(following);
     }
 
+    //ADD SORT
     @Override
     public List<TweetResponseDto> getUserTweets(String username) {
-        User user = getUserByUsername(username);
-        List<Tweet> tweets = user.getTweets();
-        return tweetMapper.entitiesToDtos(tweets);
+        return tweetRepository.findByDeletedFalseAndAuthorOrderByPostedDesc(username);
     }
 
     @Override
