@@ -29,17 +29,17 @@ public class UserController {
         return userService.createUser(userRequestDto);
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/@{username}")
     public UserResponseDto getUserUsername(String username) {
         return userService.getUserUsername(username);
     }
 
-    @DeleteMapping("/{username}")
+    @DeleteMapping("/@{username}")
     public UserResponseDto deleteUser(@RequestBody UserRequestDto userRequestDto) {
         return userService.deleteUser(userRequestDto);
     }
 
-    @PatchMapping("/{username}")
+    @PatchMapping("/@{username}")
     public UserResponseDto userNameProfileUpdate(@RequestBody UserRequestDto userRequestDto) {
         return userService.userNameProfileUpdate(userRequestDto);
     }

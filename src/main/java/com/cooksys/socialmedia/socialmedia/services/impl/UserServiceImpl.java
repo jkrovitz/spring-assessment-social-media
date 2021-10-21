@@ -89,5 +89,4 @@ public class UserServiceImpl implements UserService {
         user.setProfile(check.getProfile());
         return userMapper.entityToDto(userRepository.saveAndFlush(user));
     }
-
 }
