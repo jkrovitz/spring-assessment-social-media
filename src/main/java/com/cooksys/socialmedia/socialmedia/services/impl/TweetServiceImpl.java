@@ -1,8 +1,6 @@
 package com.cooksys.socialmedia.socialmedia.services.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.cooksys.socialmedia.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.socialmedia.entities.Tweet;
+import com.cooksys.socialmedia.socialmedia.exceptions.BadRequestException;
 import com.cooksys.socialmedia.socialmedia.exceptions.NotFoundException;
 import com.cooksys.socialmedia.socialmedia.mappers.TweetMapper;
 import com.cooksys.socialmedia.socialmedia.repositories.TweetRepository;
@@ -34,19 +33,23 @@ public class TweetServiceImpl implements TweetService {
 		if (optionalTweet.isEmpty()) {
 			throw new NotFoundException("No tweet found with id " + tweetId);
 		}
-		return optionalTweet.get();
+		Tweet tweet = optionalTweet.get();
+		if (tweet.isDeleted() == true) {
+			throw new BadRequestException("Tweet with id " + tweetId + " has already been flagged as deleted");
+		}
+		return tweet;
 	}
 	
+
 	public ResponseEntity<TweetResponseDto> postTweet(TweetRequestDto tweetRequestDto) {
         Tweet tweetToSave = tweetMapper.dtoToEntity(tweetRequestDto);
-        return new ResponseEntity<>(tweetMapper.entityToDto(tweetRepository.saveAndFlush(tweetToSave)), HttpStatus.OK);
+        return new ResponseEntity<>(tweetMapper.entityToDto(tweetRepository.saveAndFlush(tweetToSave)), HttpStatus.CREATED);
     }
 	
 	
 	@Override
 	public List<TweetResponseDto> getAllTweets() {
 		List<Tweet> tweetList = new ArrayList<Tweet>();
-		List<Tweet> tweetListSorted = new ArrayList<Tweet>();
 		for (Tweet tweet : tweetRepository.findAll((Sort.by(Sort.Direction.DESC, "posted")))){
 			if (tweet.isDeleted() == false) {
 				tweetList.add(tweet);
