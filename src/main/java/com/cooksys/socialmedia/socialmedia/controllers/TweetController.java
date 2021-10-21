@@ -39,4 +39,10 @@ public class TweetController {
 	public TweetResponseDto deleteTweet(@PathVariable Long tweetId) {
 		return tweetService.deleteTweet(tweetId);
 	}
+	
+    @GetMapping("/{tweetId}/tags")
+    public ResponseEntity<TweetResponseDto> getTweetTags(@PathVariable Long tweetId) {
+        return tweetService.getTweetTags(tweetId);
+    }
+	
 }

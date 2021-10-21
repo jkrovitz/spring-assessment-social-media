@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
+import com.cooksys.socialmedia.socialmedia.dtos.HashtagDto;
 import com.cooksys.socialmedia.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
 
@@ -14,5 +15,7 @@ public interface TweetService {
 	List<TweetResponseDto> getAllTweets();
 	
 	TweetResponseDto deleteTweet(Long tweetId);
+
+	ResponseEntity<HashtagDto> getTweetTags(Long tweetId);
 }
 
