@@ -2,6 +2,7 @@ package com.cooksys.socialmedia.socialmedia.mappers;
 
 import java.util.List;
 
+import com.cooksys.socialmedia.socialmedia.dtos.HashtagDto;
 import com.cooksys.socialmedia.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.socialmedia.entities.Tweet;

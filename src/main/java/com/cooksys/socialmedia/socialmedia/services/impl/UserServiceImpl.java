@@ -1,14 +1,17 @@
 package com.cooksys.socialmedia.socialmedia.services.impl;
 
+import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
 
 import com.cooksys.socialmedia.socialmedia.entities.Credentials;
+import com.cooksys.socialmedia.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.socialmedia.entities.User;
 import com.cooksys.socialmedia.socialmedia.exceptions.BadRequestException;
 import com.cooksys.socialmedia.socialmedia.exceptions.NotFoundException;
-import com.cooksys.socialmedia.socialmedia.mappers.CredentialsMapper;
+import com.cooksys.socialmedia.socialmedia.mappers.TweetMapper;
 import com.cooksys.socialmedia.socialmedia.mappers.UserMapper;
+import com.cooksys.socialmedia.socialmedia.repositories.TweetRepository;
 import com.cooksys.socialmedia.socialmedia.repositories.UserRepository;
 import com.cooksys.socialmedia.socialmedia.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +26,13 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final TweetRepository tweetRepository;
     private final UserMapper userMapper;
-    private final CredentialsMapper credentialsMapper;
+    private final TweetMapper tweetMapper;
 
-//CALLBACK/HELPER METHODS
+    //CALLBACK/HELPER METHODS
     private void checkUser(User user, Credentials credentials) {
-        if(!user.getCredentials().equals(credentials)) {
+        if (!user.getCredentials().equals(credentials)) {
             throw new BadRequestException("The credentials are not valid.");
         }
     }
@@ -56,11 +60,9 @@ public class UserServiceImpl implements UserService {
             user.get().setDeleted(false);
             userRepository.saveAndFlush(user.get());
             return userMapper.entityToDto(userMapper.dtoToEntity(userRequestDto));
-        }
-        else if (user.isPresent()) {
+        } else if (user.isPresent()) {
             throw new BadRequestException("The username is not available.");
-        }
-        else {
+        } else {
             return userMapper.entityToDto(userRepository.saveAndFlush(userMapper.dtoToEntity(userRequestDto)));
         }
     }
@@ -97,13 +99,12 @@ public class UserServiceImpl implements UserService {
         User check = userMapper.dtoToEntity(userRequestDto);
         checkUser(follower, check.getCredentials());
         User followee = getUserByUsername(username);
-        if(!followee.getFollowers().contains(follower)){
+        if (!followee.getFollowers().contains(follower)) {
             follower.userFollow(followee);
             followee.userFollowing(follower);
             userRepository.saveAndFlush(followee);
             userRepository.saveAndFlush(follower);
-        }
-        else {
+        } else {
             throw new BadRequestException("Already following user");
         }
     }
@@ -115,12 +116,11 @@ public class UserServiceImpl implements UserService {
         User check = userMapper.dtoToEntity(userRequestDto);
         checkUser(follower, check.getCredentials());
         User followee = getUserByUsername(username);
-        if(followee.getFollowers().contains(follower)) {
+        if (followee.getFollowers().contains(follower)) {
             follower.userUnfollow(followee);
             followee.userUnfollowing(follower);
             userRepository.saveAndFlush(followee);
-        }
-        else {
+        } else {
             throw new BadRequestException("You're already not following user");
         }
     }
@@ -138,4 +138,15 @@ public class UserServiceImpl implements UserService {
         List<User> following = user.getFollowing();
         return userMapper.entitiesToDtos(following);
     }
+
+    //ADD SORT
+    @Override
+    public List<TweetResponseDto> getUserTweets(String username) {
+        return tweetRepository.findByDeletedFalseAndAuthorOrderByPostedDesc(username);
+    }
+
+    @Override
+    public List<TweetResponseDto> getUserMentions(String username) {
+            return tweetRepository.findByDeletedFalseAndUsersMentionedOrderByPostedDesc(username);
+        }
 }
