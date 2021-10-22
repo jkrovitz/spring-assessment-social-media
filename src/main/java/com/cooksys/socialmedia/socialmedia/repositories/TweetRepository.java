@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
+import com.cooksys.socialmedia.socialmedia.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -22,4 +23,7 @@ public interface TweetRepository extends JpaRepository<Tweet, Long> {
 
 	List<TweetResponseDto> findByDeletedFalseAndUsersMentionedOrderByPostedDesc(String username);
 
+	Tweet getTweetsMentions(Long tweetId);
+
+	List<User> getTweetsLikes(Long tweetId);
 }

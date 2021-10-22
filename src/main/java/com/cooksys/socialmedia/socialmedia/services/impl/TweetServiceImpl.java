@@ -8,18 +8,16 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.cooksys.socialmedia.socialmedia.dtos.*;
+import com.cooksys.socialmedia.socialmedia.entities.Credentials;
 import com.cooksys.socialmedia.socialmedia.entities.Hashtag;
 import com.cooksys.socialmedia.socialmedia.mappers.UserMapper;
+import com.cooksys.socialmedia.socialmedia.services.UserService;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.cooksys.socialmedia.socialmedia.dtos.HashtagDto;
-import com.cooksys.socialmedia.socialmedia.dtos.TweetRequestDto;
-import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
-
-import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
 import com.cooksys.socialmedia.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.socialmedia.entities.User;
 import com.cooksys.socialmedia.socialmedia.exceptions.BadRequestException;
@@ -48,6 +46,8 @@ public class TweetServiceImpl implements TweetService {
 	private final UserRepository userRepository;
 
 	private final HashtagRepository hashtagRepository;
+
+	private final UserService userService;
 
 	private Tweet getTweet(Long tweetId) {
 		Optional<Tweet> optionalTweet = tweetRepository.findById(tweetId);
@@ -144,5 +144,22 @@ public class TweetServiceImpl implements TweetService {
 		Tweet chosenTweet = getTweet(tweetId);
 		List<User> mentionedUsers = chosenTweet.getMentionedUsers();
 		return userMapper.entitiesToDtos(mentionedUsers);
+	}
+
+	@Override
+	public TweetResponseDto repostTweet(Long tweetId, CredentialsDto credentialsDto) {
+		User tweetAuthor = getTweet(tweetId).getAuthor();
+		UserResponseDto userCheck = userService.getUserUsername(credentialsDto.getUsername());
+		if (!tweetAuthor.equals(userCheck)) {
+			throw new BadRequestException("The credentials don't match!");
+		}
+		Tweet repost = new Tweet();
+		Tweet currentTweet = getTweet(tweetId);
+		repost.setAuthor(tweetAuthor);
+		repost.setRepostOf(currentTweet);
+		repost.setMentionedUsers((List<User>) tweetRepository.getTweetsMentions(tweetId));
+		repost.setLikes(tweetRepository.getTweetsLikes(tweetId));
+		currentTweet.getReposts().add(repost);
+		return tweetMapper.entityToDto(tweetRepository.saveAndFlush(repost));
 	}
 }
