@@ -19,17 +19,13 @@ import com.cooksys.socialmedia.socialmedia.dtos.HashtagDto;
 import com.cooksys.socialmedia.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
 
-import com.cooksys.socialmedia.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
-import com.cooksys.socialmedia.socialmedia.entities.Hashtag;
-
 import com.cooksys.socialmedia.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.socialmedia.entities.User;
 import com.cooksys.socialmedia.socialmedia.exceptions.BadRequestException;
 import com.cooksys.socialmedia.socialmedia.exceptions.NotFoundException;
 import com.cooksys.socialmedia.socialmedia.mappers.HashtagMapper;
 import com.cooksys.socialmedia.socialmedia.mappers.TweetMapper;
-import com.cooksys.socialmedia.socialmedia.mappers.UserMapper;
 import com.cooksys.socialmedia.socialmedia.repositories.HashtagRepository;
 import com.cooksys.socialmedia.socialmedia.repositories.TweetRepository;
 import com.cooksys.socialmedia.socialmedia.repositories.UserRepository;
@@ -53,9 +49,7 @@ public class TweetServiceImpl implements TweetService {
 
 	private final HashtagRepository hashtagRepository;
 
-	private final UserMapper userMapper;
-
-	private Tweet getTweetToDelete(Long tweetId) {
+	private Tweet getTweet(Long tweetId) {
 		Optional<Tweet> optionalTweet = tweetRepository.findById(tweetId);
 		if (optionalTweet.isEmpty()) {
 			throw new NotFoundException("No tweet found with id " + tweetId);
@@ -65,14 +59,6 @@ public class TweetServiceImpl implements TweetService {
 			throw new BadRequestException("Tweet with id " + tweetId + " has already been flagged as deleted");
 		}
 		return tweet;
-	}
-
-	private Tweet getTweetToLike(Long tweetId) {
-		Optional<Tweet> optionalTweet = tweetRepository.findById(tweetId);
-		if (optionalTweet.isEmpty()) {
-			throw new NotFoundException("There was no tweet found with id " + tweetId + ".");
-		}
-		return optionalTweet.get();
 	}
 
 	public ResponseEntity<TweetResponseDto> postTweet(TweetRequestDto tweetRequestDto) {
@@ -141,40 +127,10 @@ public class TweetServiceImpl implements TweetService {
 
 	@Override
 	public TweetResponseDto deleteTweet(Long tweetId) {
-		Tweet tweetToDelete = getTweetToDelete(tweetId);
+		Tweet tweetToDelete = getTweet(tweetId);
 		tweetToDelete.setDeleted(true);
 		return tweetMapper.entityToDto(tweetRepository.saveAndFlush(tweetToDelete));
 	}
-
-	@Override
-	public void addTweetLike(Long tweetId, UserRequestDto userRequestDto) {
-		Optional<User> optionalUser = userRepository
-				.findByCredentialsUsernameAndDeletedFalse(userRequestDto.getCredentials().getUsername());
-
-		if (optionalUser.isPresent()) {
-			if (optionalUser.get().getCredentials().getPassword()
-					.equals(userRequestDto.getCredentials().getPassword())) {
-				User user = optionalUser.get();
-
-				Tweet tweetToLike = getTweetToLike(tweetId);
-				tweetToLike = tweetRepository.getById(tweetId);
-				tweetToLike.getLikes().add(user);
-
-				tweetMapper.entityToDto(tweetRepository.saveAndFlush(tweetToLike));
-				userMapper.entityToDto(userRepository.saveAndFlush(user));
-
-			}
-		} else {
-			throw new NotFoundException("User with credentials " + userRequestDto.getCredentials().getUsername()
-					+ " along with the password entered were either not found or were deleted.");
-		}
-	}
-
-	@Override
-	public List<UserResponseDto> getTweetLikes(Long tweetId) {
-		Tweet tweetToLike = getTweetToLike(tweetId);
-		tweetToLike = tweetRepository.getById(tweetId);
-		return userMapper.entitiesToDtos(tweetToLike.getLikes());
 
     @Override
     public List<HashtagDto> getTweetTags(Long tweetId) {
@@ -188,6 +144,5 @@ public class TweetServiceImpl implements TweetService {
 		Tweet chosenTweet = getTweet(tweetId);
 		List<User> mentionedUsers = chosenTweet.getMentionedUsers();
 		return userMapper.entitiesToDtos(mentionedUsers);
-
 	}
 }
