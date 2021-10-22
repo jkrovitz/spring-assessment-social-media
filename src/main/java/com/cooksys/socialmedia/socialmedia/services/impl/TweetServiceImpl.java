@@ -162,4 +162,11 @@ public class TweetServiceImpl implements TweetService {
 		currentTweet.getReposts().add(repost);
 		return tweetMapper.entityToDto(tweetRepository.saveAndFlush(repost));
 	}
+
+	@Override
+	public List<TweetResponseDto> getTweetReposts(Long tweetId) {
+		Tweet chosenTweet = getTweet(tweetId);
+		List<Tweet> tweetReposts =  chosenTweet.getReposts();
+		return tweetMapper.entitiesToDtos(tweetReposts);
+	}
 }
