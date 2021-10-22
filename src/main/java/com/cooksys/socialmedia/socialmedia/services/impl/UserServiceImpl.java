@@ -18,8 +18,9 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import javax.persistence.EntityNotFoundException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -138,7 +139,6 @@ public class UserServiceImpl implements UserService {
         return userMapper.entitiesToDtos(following);
     }
 
-    //ADD SORT
     @Override
     public List<TweetResponseDto> getUserTweets(String username) {
         return tweetRepository.findByDeletedFalseAndAuthorOrderByPostedDesc(username);
@@ -150,4 +150,23 @@ public class UserServiceImpl implements UserService {
         List<Tweet> userMentions = user.getMentions();
         return tweetMapper.entitiesToDtos(userMentions);
     }
+
+    @Override
+    public List<Tweet> getUserFeed(String username) {
+        User tweetUser = getUserByUsername(username);
+        if (tweetUser.getIsActive().equals(true)) {
+            Set<User> tweetUsers = tweetUser.getUserFollowing().stream()
+                    .filter(user -> user.getIsActive().equals(true))
+                    .collect(Collectors.toSet());
+            tweetUsers.add(tweetUser);
+            List<Tweet> tweetU = new ArrayList<>();
+
+            for(User tweetUser2 : tweetUsers) {
+                tweetU.addAll(tweetUser2.getTweets());
+            }
+            return tweetU;
+        }
+        throw new EntityNotFoundException();
+    }
 }
+

@@ -13,7 +13,6 @@ public interface TweetService {
 	
 	TweetResponseDto deleteTweet(Long tweetId);
 
-
 	List<HashtagDto> getTweetTags(Long tweetId);
 
 	List<UserResponseDto> getTweetMentionedUsers(Long tweetId);
