@@ -21,9 +21,4 @@ public interface TweetRepository extends JpaRepository<Tweet, Long> {
 
 	List<TweetResponseDto> findByDeletedFalseAndAuthorOrderByPostedDesc(String username);
 
-	List<TweetResponseDto> findByDeletedFalseAndUsersMentionedOrderByPostedDesc(String username);
-
-	Tweet getTweetsMentions(Long tweetId);
-
-	List<User> getTweetsLikes(Long tweetId);
 }

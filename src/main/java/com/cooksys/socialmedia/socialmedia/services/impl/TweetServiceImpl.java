@@ -147,23 +147,6 @@ public class TweetServiceImpl implements TweetService {
 	}
 
 	@Override
-	public TweetResponseDto repostTweet(Long tweetId, CredentialsDto credentialsDto) {
-		User tweetAuthor = getTweet(tweetId).getAuthor();
-		UserResponseDto userCheck = userService.getUserUsername(credentialsDto.getUsername());
-		if (!tweetAuthor.equals(userCheck)) {
-			throw new BadRequestException("The credentials don't match!");
-		}
-		Tweet repost = new Tweet();
-		Tweet currentTweet = getTweet(tweetId);
-		repost.setAuthor(tweetAuthor);
-		repost.setRepostOf(currentTweet);
-		repost.setMentionedUsers((List<User>) tweetRepository.getTweetsMentions(tweetId));
-		repost.setLikes(tweetRepository.getTweetsLikes(tweetId));
-		currentTweet.getReposts().add(repost);
-		return tweetMapper.entityToDto(tweetRepository.saveAndFlush(repost));
-	}
-
-	@Override
 	public List<TweetResponseDto> getTweetReposts(Long tweetId) {
 		Tweet chosenTweet = getTweet(tweetId);
 		List<Tweet> tweetReposts =  chosenTweet.getReposts();

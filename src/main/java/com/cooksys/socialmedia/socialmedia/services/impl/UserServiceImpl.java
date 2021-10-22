@@ -46,9 +46,8 @@ public class UserServiceImpl implements UserService {
         return user.get();
     }
 
-    //ADD FLAG FOR DELETED to be removed from list
     public List<UserResponseDto> getAllUsers() {
-        return userMapper.entitiesToDtos(userRepository.findAll());
+        return userRepository.findAllUsersByDeletedFalse();
     }
 
     //ADD CATCHES & REFACTOR
@@ -147,8 +146,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<TweetResponseDto> getUserMentions(String username) {
-            return tweetRepository.findByDeletedFalseAndUsersMentionedOrderByPostedDesc(username);
-        }
+        User user = getUserByUsername(username);
+        List<Tweet> userMentions = user.getMentions();
+        return tweetMapper.entitiesToDtos(userMentions);
+    }
 
     @Override
     public List<Tweet> getUserFeed(String username) {
@@ -168,3 +169,4 @@ public class UserServiceImpl implements UserService {
         throw new EntityNotFoundException();
     }
 }
+
