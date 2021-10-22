@@ -18,8 +18,6 @@ public interface TweetService {
 
 	List<UserResponseDto> getTweetMentionedUsers(Long tweetId);
 
-	TweetResponseDto repostTweet(Long tweetId, CredentialsDto credentialsDto);
-
 	List<TweetResponseDto> getTweetReposts(Long tweetId);
 }
 

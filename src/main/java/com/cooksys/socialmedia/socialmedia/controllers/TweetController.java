@@ -53,10 +53,4 @@ public class TweetController {
 	public List<TweetResponseDto> getTweetReposts(@PathVariable Long tweetId) {
 		return tweetService.getTweetReposts(tweetId);
 	}
-
-	@PostMapping("/{tweetId}/repost")
-	public TweetResponseDto repostTweet(@PathVariable Long tweetId, @RequestBody CredentialsDto credentialsDto) {
-		return tweetService.repostTweet(tweetId, credentialsDto);
-	}
-	
 }
