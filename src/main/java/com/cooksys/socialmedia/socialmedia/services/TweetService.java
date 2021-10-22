@@ -18,5 +18,9 @@ public interface TweetService {
 	List<UserResponseDto> getTweetMentionedUsers(Long tweetId);
 
 	List<TweetResponseDto> getTweetReposts(Long tweetId);
+	
+	void addTweetLike(Long tweetId, UserRequestDto userRequestDto);
+
+	List<UserResponseDto> getTweetLikes(Long tweetId);
 }
 

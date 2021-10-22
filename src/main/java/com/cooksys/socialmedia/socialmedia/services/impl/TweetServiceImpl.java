@@ -48,6 +48,7 @@ public class TweetServiceImpl implements TweetService {
 	private final HashtagRepository hashtagRepository;
 
 	private final UserService userService;
+	
 
 	private Tweet getTweet(Long tweetId) {
 		Optional<Tweet> optionalTweet = tweetRepository.findById(tweetId);
@@ -59,6 +60,14 @@ public class TweetServiceImpl implements TweetService {
 			throw new BadRequestException("Tweet with id " + tweetId + " has already been flagged as deleted");
 		}
 		return tweet;
+	}
+	
+	private Tweet getTweetToLike(Long tweetId) {
+		Optional<Tweet> optionalTweet = tweetRepository.findById(tweetId);
+		if (optionalTweet.isEmpty()) {
+			throw new NotFoundException("There was no tweet found with id " + tweetId + ".");
+		}
+		return optionalTweet.get();
 	}
 
 	public ResponseEntity<TweetResponseDto> postTweet(TweetRequestDto tweetRequestDto) {
@@ -152,4 +161,36 @@ public class TweetServiceImpl implements TweetService {
 		List<Tweet> tweetReposts =  chosenTweet.getReposts();
 		return tweetMapper.entitiesToDtos(tweetReposts);
 	}
+	
+	@Override
+	public void addTweetLike(Long tweetId, UserRequestDto userRequestDto) {
+		Optional<User> optionalUser = userRepository
+				.findByCredentialsUsernameAndDeletedFalse(userRequestDto.getCredentials().getUsername());
+
+		if (optionalUser.isPresent()) {
+			if (optionalUser.get().getCredentials().getPassword()
+					.equals(userRequestDto.getCredentials().getPassword())) {
+				User user = optionalUser.get();
+
+				Tweet tweetToLike = getTweetToLike(tweetId);
+				tweetToLike = tweetRepository.getById(tweetId);
+				tweetToLike.getLikes().add(user);
+
+				tweetMapper.entityToDto(tweetRepository.saveAndFlush(tweetToLike));
+				userMapper.entityToDto(userRepository.saveAndFlush(user));
+
+			}
+		} else {
+			throw new NotFoundException("User with credentials " + userRequestDto.getCredentials().getUsername()
+					+ " along with the password entered were either not found or were deleted.");
+		}
+	}
+
+	@Override
+	public List<UserResponseDto> getTweetLikes(Long tweetId) {
+		Tweet tweetToLike = getTweetToLike(tweetId);
+		tweetToLike = tweetRepository.getById(tweetId);
+		return userMapper.entitiesToDtos(tweetToLike.getLikes());
+	}	
+	
 }
