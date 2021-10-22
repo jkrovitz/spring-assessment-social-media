@@ -1,13 +1,14 @@
 package com.cooksys.socialmedia.socialmedia.mappers;
 
-import com.cooksys.socialmedia.socialmedia.dtos.UserRequestDto;
-import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
-import com.cooksys.socialmedia.socialmedia.entities.User;
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.sql.Timestamp;
-import java.util.List;
+import com.cooksys.socialmedia.socialmedia.dtos.UserRequestDto;
+import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
+import com.cooksys.socialmedia.socialmedia.entities.Tweet;
+import com.cooksys.socialmedia.socialmedia.entities.User;
 
 @Mapper(componentModel = "spring", uses = {CredentialsMapper.class, ProfileMapper.class})
 public interface UserMapper {
