@@ -1,6 +1,5 @@
 package com.cooksys.socialmedia.socialmedia.repositories;
 
-import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
 import com.cooksys.socialmedia.socialmedia.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;

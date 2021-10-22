@@ -2,12 +2,8 @@ package com.cooksys.socialmedia.socialmedia.services;
 
 import java.util.List;
 
-import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
+import com.cooksys.socialmedia.socialmedia.dtos.*;
 import org.springframework.http.ResponseEntity;
-
-import com.cooksys.socialmedia.socialmedia.dtos.HashtagDto;
-import com.cooksys.socialmedia.socialmedia.dtos.TweetRequestDto;
-import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
 
 public interface TweetService {
 
@@ -21,5 +17,7 @@ public interface TweetService {
 	List<HashtagDto> getTweetTags(Long tweetId);
 
 	List<UserResponseDto> getTweetMentionedUsers(Long tweetId);
+
+	List<TweetResponseDto> getTweetReposts(Long tweetId);
 }
 
