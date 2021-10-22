@@ -2,6 +2,7 @@ package com.cooksys.socialmedia.socialmedia.entities;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.AttributeOverride;
@@ -68,7 +69,7 @@ public class User {
     private List<User> following;
 
     @ManyToMany(mappedBy = "likes")
-    private List<Tweet> likedTweets;
+    private List<Tweet> likedTweets = new ArrayList<>();
 
     @ManyToMany(mappedBy = "mentionedUsers")
     private List<Tweet> mentions;
