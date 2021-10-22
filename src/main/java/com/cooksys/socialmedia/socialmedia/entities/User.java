@@ -3,6 +3,7 @@ package com.cooksys.socialmedia.socialmedia.entities;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -40,6 +41,8 @@ public class User {
     private java.sql.Timestamp joined = Timestamp.valueOf(LocalDateTime.now());
 
     private boolean deleted;
+
+    private Boolean isActive = true;
 
     @Embedded
     @AttributeOverrides({
@@ -95,6 +98,14 @@ public class User {
     public void userUnfollowing(User userToRemove) {
 
         followers.remove(userToRemove);
+    }
+
+    public List<User> getUserFollowing() {
+        return following;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
     }
 
 }
