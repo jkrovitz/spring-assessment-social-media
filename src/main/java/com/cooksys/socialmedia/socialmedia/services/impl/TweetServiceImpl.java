@@ -193,4 +193,19 @@ public class TweetServiceImpl implements TweetService {
 		return userMapper.entitiesToDtos(tweetToLike.getLikes());
 	}	
 	
+	@Override
+	public List<TweetResponseDto> tweetReplies(Long tweetId) {
+
+		Tweet findRepliesOf = tweetRepository.getById(tweetId);
+		List<Tweet> allReplies = new ArrayList<>();
+		for (Tweet t : tweetRepository.findAll()) {
+			if ((t.getInReplyTo() == findRepliesOf) && (!(t.isDeleted()))) {
+				allReplies.add(t);
+			}
+		}
+
+		return tweetMapper.entitiesToDtos(allReplies);
+
+	}
+	
 }

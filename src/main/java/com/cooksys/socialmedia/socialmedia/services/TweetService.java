@@ -16,6 +16,8 @@ public interface TweetService {
 	List<HashtagDto> getTweetTags(Long tweetId);
 
 	List<UserResponseDto> getTweetMentionedUsers(Long tweetId);
+	
+	List<TweetResponseDto> tweetReplies(Long tweetId);
 
 	List<TweetResponseDto> getTweetReposts(Long tweetId);
 	
