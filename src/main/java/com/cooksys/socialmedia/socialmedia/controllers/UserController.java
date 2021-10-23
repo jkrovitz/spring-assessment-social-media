@@ -38,8 +38,8 @@ public class UserController {
     }
 
     @DeleteMapping("/@{username}")
-    public UserResponseDto deleteUser(@RequestBody UserRequestDto userRequestDto) {
-        return userService.deleteUser(userRequestDto);
+    public UserResponseDto deleteUser(@PathVariable String username, @RequestBody UserRequestDto userRequestDto) {
+        return userService.deleteUser(username, userRequestDto);
     }
 
     @PatchMapping("/@{username}")

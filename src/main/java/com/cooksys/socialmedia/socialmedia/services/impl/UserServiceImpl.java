@@ -1,9 +1,19 @@
 package com.cooksys.socialmedia.socialmedia.services.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityNotFoundException;
+
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
 import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
-
 import com.cooksys.socialmedia.socialmedia.entities.Credentials;
 import com.cooksys.socialmedia.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.socialmedia.entities.User;
@@ -14,13 +24,8 @@ import com.cooksys.socialmedia.socialmedia.mappers.UserMapper;
 import com.cooksys.socialmedia.socialmedia.repositories.TweetRepository;
 import com.cooksys.socialmedia.socialmedia.repositories.UserRepository;
 import com.cooksys.socialmedia.socialmedia.services.UserService;
+
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Service;
-
-import javax.persistence.EntityNotFoundException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,9 +51,21 @@ public class UserServiceImpl implements UserService {
         return user.get();
     }
 
-    public List<UserResponseDto> getAllUsers() {
-        return userRepository.findAllUsersByDeletedFalse();
-    }
+//    public List<UserResponseDto> getAllUsers() {
+//        return userRepository.findAllUsersByDeletedFalse();
+//    }
+    
+    @Override
+	public List<UserResponseDto> getAllUsers() {
+		List<User> userList = new ArrayList<User>();
+		for (User user : userRepository.findAll((Sort.by(Sort.Direction.DESC, "joined")))) {
+			if (user.isDeleted() == false) {
+				userList.add(user);
+			}
+		}
+		return userMapper.entitiesToDtos(userList);
+	}
+
 
     //ADD CATCHES & REFACTOR
     @Override
@@ -75,12 +92,19 @@ public class UserServiceImpl implements UserService {
 
     //ADD CATCHES & REFACTOR
     @Override
-    public UserResponseDto deleteUser(UserRequestDto userRequestDto) {
+    public UserResponseDto deleteUser(String username, UserRequestDto userRequestDto) {
         User user = getUserByUsername(userRequestDto.getCredentials().getUsername());
         User check = userMapper.dtoToEntity(userRequestDto);
         checkUser(user, check.getCredentials());
-        user.setDeleted(true);
-        return userMapper.entityToDto(userRepository.saveAndFlush(user));
+//        user.setDeleted(true);
+        User userToDelete = new User();
+        for (User aUser : userRepository.findAll()) {
+        	if ((aUser.getCredentials().getUsername()).equals(username)) {
+        		userToDelete = aUser;
+        	}
+        }
+        userToDelete.setDeleted(true);
+        return userMapper.entityToDto(userRepository.saveAndFlush(userToDelete));
     }
 
     //ADD CATCHES & REFACTOR
