@@ -19,7 +19,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByCredentialsUsername(String username);
 
     Optional<User> findByCredentialsUsernameAndDeletedFalse(String string);
-
-    @Query("SELECT i FROM User i WHERE i.deleted=false")
-    List<User> findAllNonDeletedUsers(List<User> user);
+    
+//
+//    @Query("SELECT i FROM user_table i WHERE i.deleted=false")
+//    List<User> findAllNonDeletedUsers(List<User> user);
+    
 }

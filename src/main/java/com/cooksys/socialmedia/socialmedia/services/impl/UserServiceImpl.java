@@ -44,16 +44,17 @@ public class UserServiceImpl implements UserService {
     }
 
     private User getUserByUsername(String username) {
-        Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
-        if (user.isEmpty()) {
-            throw new NotFoundException("No user found");
+        Optional<User> optionalUser = userRepository.findByCredentialsUsername(username);
+        if (optionalUser.isEmpty()) {
+            throw new NotFoundException("No user found.");
         }
-        return user.get();
+        User user = optionalUser.get();
+        if (user.isDeleted()) {
+        	throw new BadRequestException("User has been flagged as deleted.");
+        }
+        return user;
     }
 
-//    public List<UserResponseDto> getAllUsers() {
-//        return userRepository.findAllUsersByDeletedFalse();
-//    }
     
     @Override
 	public List<UserResponseDto> getAllUsers() {
@@ -65,19 +66,18 @@ public class UserServiceImpl implements UserService {
 		}
 		return userMapper.entitiesToDtos(userList);
 	}
-
-
-    //ADD CATCHES & REFACTOR
+    
     @Override
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
         String username = userRequestDto.getCredentials().getUsername();
         Optional<User> user = userRepository.findByCredentialsUsername(username);
         if (user.isPresent() && user.get().isDeleted() &&
                 user.get().getCredentials().getPassword().equals(userRequestDto.getCredentials().getPassword())) {
-            user.get().setDeleted(false);
-            userRepository.saveAndFlush(user.get());
-            return userMapper.entityToDto(userMapper.dtoToEntity(userRequestDto));
-        } else if (user.isPresent()) {
+        	java.sql.Timestamp joined = user.get().getJoined();
+        	user.get().setDeleted(false);
+            user.get().setJoined(joined);
+            return userMapper.entityToDto(userRepository.saveAndFlush(user.get()));
+        } else if ((user.isPresent()) && (user.get().getCredentials().getPassword().equals(userRequestDto.getCredentials().getPassword()))) {
             throw new BadRequestException("The username is not available.");
         } else {
             return userMapper.entityToDto(userRepository.saveAndFlush(userMapper.dtoToEntity(userRequestDto)));
@@ -96,7 +96,6 @@ public class UserServiceImpl implements UserService {
         User user = getUserByUsername(userRequestDto.getCredentials().getUsername());
         User check = userMapper.dtoToEntity(userRequestDto);
         checkUser(user, check.getCredentials());
-//        user.setDeleted(true);
         User userToDelete = new User();
         for (User aUser : userRepository.findAll()) {
         	if ((aUser.getCredentials().getUsername()).equals(username)) {
@@ -109,11 +108,20 @@ public class UserServiceImpl implements UserService {
 
     //ADD CATCHES & REFACTOR
     @Override
-    public UserResponseDto userNameProfileUpdate(UserRequestDto userRequestDto) {
+    public UserResponseDto userNameProfileUpdate(String username, UserRequestDto userRequestDto) {
         User user = getUserByUsername(userRequestDto.getCredentials().getUsername());
         User check = userMapper.dtoToEntity(userRequestDto);
         checkUser(user, check.getCredentials());
         user.setProfile(check.getProfile());
+        Credentials credentials = check.getCredentials();
+        for (User aUser : userRepository.findAll()) {
+        	if (aUser.getCredentials().getUsername().equals(username)) {
+				throw new BadRequestException("A user with that username already exists in the database.");
+			}
+        		
+		}
+        credentials.setUsername(username);
+        user.setCredentials(credentials);    
         return userMapper.entityToDto(userRepository.saveAndFlush(user));
     }
 

@@ -39,7 +39,7 @@ public class User {
     @CreationTimestamp
     @Column(name = "joined")
     private java.sql.Timestamp joined = Timestamp.valueOf(LocalDateTime.now());
-
+    
     private boolean deleted;
 
     private Boolean isActive = true;

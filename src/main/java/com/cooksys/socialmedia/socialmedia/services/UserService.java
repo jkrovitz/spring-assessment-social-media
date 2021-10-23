@@ -17,7 +17,7 @@ public interface UserService {
 
     UserResponseDto deleteUser(String username, UserRequestDto userRequestDto);
 
-    UserResponseDto userNameProfileUpdate(UserRequestDto userRequestDto);
+    UserResponseDto userNameProfileUpdate(String username, UserRequestDto userRequestDto);
 
     void followUser(String username, UserRequestDto userRequestDto);
 

@@ -43,8 +43,8 @@ public class UserController {
     }
 
     @PatchMapping("/@{username}")
-    public UserResponseDto userNameProfileUpdate(@RequestBody UserRequestDto userRequestDto) {
-        return userService.userNameProfileUpdate(userRequestDto);
+    public UserResponseDto userNameProfileUpdate(@PathVariable String username, @RequestBody UserRequestDto userRequestDto) {
+        return userService.userNameProfileUpdate(username, userRequestDto);
 
     }
 
