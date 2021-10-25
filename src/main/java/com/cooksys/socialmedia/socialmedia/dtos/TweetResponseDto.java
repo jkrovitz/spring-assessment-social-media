@@ -1,6 +1,9 @@
 package com.cooksys.socialmedia.socialmedia.dtos;
 
 import java.sql.Timestamp;
+import java.util.List;
+
+import com.cooksys.socialmedia.socialmedia.entities.User;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,5 +23,7 @@ public class TweetResponseDto {
     private TweetResponseDto inReplyTo;
 
     private TweetRequestDto repostOf;
+    
+    private List<User> following;
 
 }

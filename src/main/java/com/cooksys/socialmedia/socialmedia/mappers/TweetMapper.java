@@ -1,13 +1,13 @@
 package com.cooksys.socialmedia.socialmedia.mappers;
 
 import java.util.List;
+import java.util.Set;
 
-import com.cooksys.socialmedia.socialmedia.dtos.HashtagDto;
+import org.mapstruct.Mapper;
+
 import com.cooksys.socialmedia.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.socialmedia.entities.Tweet;
-
-import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring", uses = { UserMapper.class })
 public interface TweetMapper {
@@ -17,5 +17,10 @@ public interface TweetMapper {
     List<TweetResponseDto> entitiesToDtos(List<Tweet> tweet);
     
     Tweet dtoToEntity(TweetRequestDto dto);
+    
+    TweetRequestDto entityToRequestDto(Tweet tweet);
+    
+    Tweet responseDtoToEntity(TweetResponseDto tweetResponseDto);
 
+    List<TweetResponseDto> setEntitiesToDtos(Set<Tweet> entities);
 }

@@ -1,13 +1,14 @@
 package com.cooksys.socialmedia.socialmedia.repositories;
 
-import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
-import com.cooksys.socialmedia.socialmedia.entities.User;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
+import com.cooksys.socialmedia.socialmedia.dtos.UserResponseDto;
+import com.cooksys.socialmedia.socialmedia.entities.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -20,8 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByCredentialsUsernameAndDeletedFalse(String string);
     
-//
-//    @Query("SELECT i FROM user_table i WHERE i.deleted=false")
-//    List<User> findAllNonDeletedUsers(List<User> user);
-    
+    @Query(value = "SELECT * FROM user_table ut"
+			+ " WHERE ut.deleted=false", nativeQuery=true )
+	List<User> findAllNonDeletedUsers();
 }

@@ -7,4 +7,5 @@ import com.cooksys.socialmedia.socialmedia.dtos.HashtagDto;
 public interface HashtagService {
 
     List<HashtagDto> getAllHashtags();
+    
 }

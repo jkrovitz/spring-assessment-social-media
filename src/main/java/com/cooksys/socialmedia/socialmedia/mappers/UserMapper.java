@@ -6,7 +6,6 @@ import com.cooksys.socialmedia.socialmedia.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {CredentialsMapper.class, ProfileMapper.class})

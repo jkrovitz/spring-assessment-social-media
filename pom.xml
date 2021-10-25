@@ -8,10 +8,10 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.cooksys</groupId>
-	<artifactId>quiz_api</artifactId>
+	<artifactId>social_media_project</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>quiz_api</name>
-	<description>Quiz API skeleton code for the FT assignment.</description>
+	<name>social_media_project</name>
+	<description>Social Media Project</description>
 	<properties>
 		<java.version>11</java.version>
 		<org.mapstruct.version>1.4.1.Final</org.mapstruct.version>

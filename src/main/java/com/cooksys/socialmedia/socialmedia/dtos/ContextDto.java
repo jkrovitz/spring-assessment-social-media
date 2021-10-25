@@ -14,4 +14,10 @@ public class ContextDto {
     private List<TweetResponseDto> before;
 
     private List<TweetResponseDto> after;
+    
+    public ContextDto(TweetResponseDto target, List<TweetResponseDto> before, List<TweetResponseDto> after) {
+        this.target = target;
+        this.before = before;
+        this.after = after;
+    }
 }

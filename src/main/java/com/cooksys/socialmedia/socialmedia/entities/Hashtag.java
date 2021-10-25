@@ -15,6 +15,10 @@ import javax.persistence.SequenceGenerator;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -33,11 +37,15 @@ public class Hashtag {
     private String label;
 
     @CreationTimestamp
+    @JsonBackReference
     private Timestamp firstUsed = Timestamp.valueOf(LocalDateTime.now());
 
     @UpdateTimestamp
+    @JsonBackReference
     private Timestamp lastUsed;
 
+    @JsonManagedReference
+    @JsonIgnoreProperties("hashtags")
     @ManyToMany(mappedBy = "hashtags")
     private List<Tweet> tweets;
 }

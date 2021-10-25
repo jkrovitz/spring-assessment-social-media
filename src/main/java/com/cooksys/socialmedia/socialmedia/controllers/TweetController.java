@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cooksys.socialmedia.socialmedia.dtos.ContextDto;
+import com.cooksys.socialmedia.socialmedia.dtos.CredentialsDto;
 import com.cooksys.socialmedia.socialmedia.dtos.HashtagDto;
 import com.cooksys.socialmedia.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.socialmedia.dtos.TweetResponseDto;
@@ -39,6 +41,11 @@ public class TweetController {
 	public List<TweetResponseDto> getAllTweets() {
 		return tweetService.getAllTweets();
 	}
+	
+	@GetMapping("/{tweetId}")
+	public TweetResponseDto getTweetById(@PathVariable Long tweetId) {
+		return tweetService.getTweetById(tweetId);
+	}
 
 	@DeleteMapping("/{tweetId}")
 	public TweetResponseDto deleteTweet(@PathVariable Long tweetId) {
@@ -60,6 +67,11 @@ public class TweetController {
 		return tweetService.getTweetReposts(tweetId);
 	}
 	
+	@PostMapping("/{tweetId}/repost")
+	public TweetResponseDto createTweetRepost(@PathVariable Long tweetId, @RequestBody CredentialsDto credentialsDto) {
+		return tweetService.createTweetRepost(tweetId, credentialsDto);
+	}
+	
 	@PostMapping("/{tweetId}/like")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void addTweetLike(@PathVariable Long tweetId, @RequestBody UserRequestDto userRequestDto) {
@@ -74,5 +86,15 @@ public class TweetController {
 	@GetMapping("/{tweetId}/replies")
 	public List<TweetResponseDto> tweetReplies(@PathVariable Long tweetId){
 		return tweetService.tweetReplies(tweetId);
+	}
+	
+	@PostMapping("{tweetId}/reply")
+	public TweetResponseDto addTweetReply(@PathVariable Long tweetId, @RequestBody TweetRequestDto tweetRequestDto) {
+		return tweetService.addTweetReply(tweetId, tweetRequestDto);
+	}
+	
+	@GetMapping("/{id}/context")
+	public ContextDto context(@PathVariable Long id) {
+		return tweetService.context(id);
 	}
 }

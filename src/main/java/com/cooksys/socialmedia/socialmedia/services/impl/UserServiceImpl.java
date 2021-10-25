@@ -3,10 +3,9 @@ package com.cooksys.socialmedia.socialmedia.services.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import javax.persistence.EntityNotFoundException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -29,25 +28,21 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@PersistenceContext
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final TweetRepository tweetRepository;
 	private final UserMapper userMapper;
 	private final TweetMapper tweetMapper;
+	
+	@PersistenceContext
+	private EntityManager em;
 
-	// CALLBACK/HELPER METHODS
 	private void checkUser(User user, Credentials credentials) {
 		if (!user.getCredentials().equals(credentials)) {
 			throw new BadRequestException("The credentials are not valid.");
 		}
-	}
-
-	private boolean checkUserBool(User user, Credentials credentials) {
-		if (!user.getCredentials().equals(credentials)) {
-			throw new BadRequestException("The credentials are not valid.");
-		}
-		return true;
 	}
 
 	private User getUserByUsername(String username) {
@@ -56,9 +51,9 @@ public class UserServiceImpl implements UserService {
 			throw new NotFoundException("No user found.");
 		}
 		User user = optionalUser.get();
-//		if (user.isDeleted()) {
-//			throw new BadRequestException("User has been flagged as deleted.");
-//		}
+		if (user.isDeleted()) {
+			throw new BadRequestException("User has been flagged as deleted.");
+		}
 		return user;
 	}
 
@@ -105,7 +100,6 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
-	// ADD CATCHES & REFACTOR
 	@Override
 	public UserResponseDto getUserUsername(String username) {
 		return userMapper.entityToDto(getUserByUsername(username));
@@ -135,7 +129,6 @@ public class UserServiceImpl implements UserService {
 
 	}
 
-	// ADD CATCHES & REFACTOR
 	@Override
 	public UserResponseDto userNameProfileUpdate(String username, UserRequestDto userRequestDto) {
 		User user = getUserByUsername(userRequestDto.getCredentials().getUsername());
@@ -201,7 +194,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<TweetResponseDto> getUserTweets(String username) {
-		return tweetRepository.findByDeletedFalseAndAuthorOrderByPostedDesc(username);
+		User user = getUserByUsername(username);
+		List<Tweet> tweetList = new ArrayList<Tweet>();
+		for (Tweet tweet : tweetRepository.findAll((Sort.by(Sort.Direction.DESC, "posted")))) {
+			if (tweet.isDeleted() == false && (tweet.getAuthor().equals(user))) {
+				tweetList.add(tweet);
+			}
+		}
+		return tweetMapper.entitiesToDtos(tweetList);
 	}
 
 	@Override
@@ -210,21 +210,17 @@ public class UserServiceImpl implements UserService {
 		List<Tweet> userMentions = user.getMentions();
 		return tweetMapper.entitiesToDtos(userMentions);
 	}
-
+	
 	@Override
 	public List<Tweet> getUserFeed(String username) {
 		User tweetUser = getUserByUsername(username);
-		if (tweetUser.getIsActive().equals(true)) {
-			Set<User> tweetUsers = tweetUser.getUserFollowing().stream().filter(user -> user.getIsActive().equals(true))
-					.collect(Collectors.toSet());
-			tweetUsers.add(tweetUser);
-			List<Tweet> tweetU = new ArrayList<>();
-
-			for (User tweetUser2 : tweetUsers) {
-				tweetU.addAll(tweetUser2.getTweets());
+		List<Tweet> tweets = new ArrayList<Tweet>();
+		if (!tweetUser.isDeleted()) {
+			tweets = tweetRepository.queryBy(username);
+			return tweets;
 			}
-			return tweetU;
+		else {
+			throw new NotFoundException("not found");
 		}
-		throw new EntityNotFoundException();
 	}
 }
